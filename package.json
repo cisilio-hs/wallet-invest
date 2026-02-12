@@ -1,0 +1,39 @@
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite",
+        "ziggy": "docker-compose exec app php artisan ziggy:generate resources/js/types/ziggy.d.ts --types",
+        "type-check": "tsc --noEmit",
+        "types": "npm run ziggy && npm run type-check",
+        "cleanup-jsx": "find resources/js -name '*.jsx' -o -name '*.js' | grep -v node_modules | xargs rm -v 2>/dev/null || echo 'No .jsx files to cleanup'"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.29.0",
+        "@headlessui/react": "^2.0.0",
+        "@inertiajs/react": "^2.0.0",
+        "@tailwindcss/forms": "^0.5.3",
+        "@tailwindcss/vite": "^4.0.0",
+        "@types/node": "^20.0.0",
+        "@types/react": "^19.2.13",
+        "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "^4.7.0",
+        "autoprefixer": "^10.4.12",
+        "axios": "^1.11.0",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^2.0.0",
+        "postcss": "^8.4.31",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-refresh": "^0.18.0",
+        "tailwindcss": "^3.2.1",
+        "typescript": "^5.9.3",
+        "vite": "^7.0.7"
+    },
+    "dependencies": {
+        "@heroicons/react": "^2.2.0",
+        "@tailwindcss/line-clamp": "^0.4.4"
+    }
+}

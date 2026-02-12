@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @property int $id
+ * @property int $wallet_id
+ * @property string $name
+ * @property string $currency
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property-read \App\Models\Wallet $wallet
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WalletAsset> $assets
+ */
+class Portfolio extends Model
+{
+    /** @use HasFactory<\Database\Factories\PortfolioFactory> */
+    use HasFactory;
+
+    protected $fillable = [
+        'wallet_id',
+        'name',
+        'currency',
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Wallet, $this>
+     */
+    public function wallet()
+    {
+        return $this->belongsTo(Wallet::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<WalletAsset, $this>
+     */
+    public function assets()
+    {
+        return $this->hasMany(WalletAsset::class);
+    }
+}

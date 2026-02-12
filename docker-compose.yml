@@ -1,0 +1,80 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      args:
+        UID: ${HOST_USER_UID}
+        GID: ${HOST_USER_GID}
+    container_name: laravel_app
+    user: "${HOST_USER_UID}:${HOST_USER_GID}"
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel
+    depends_on:
+      - db
+
+  vite:
+    build:
+      context: .
+      dockerfile: docker/vite/Dockerfile
+      args:
+        UID: ${HOST_USER_UID}
+        GID: ${HOST_USER_GID}
+    user: "${HOST_USER_UID}:${HOST_USER_GID}"
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "${VITE_PORT}:${VITE_PORT}"
+    networks:
+      - laravel
+
+
+  nginx:
+    image: nginx:alpine
+    container_name: laravel_nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - laravel
+
+  db:
+    image: mysql:8.4
+    container_name: laravel_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - laravel
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    networks:
+      - laravel
+
+networks:
+  laravel:
+
+volumes:
+  dbdata:

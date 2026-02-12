@@ -2,12 +2,10 @@
 .env
 .env.backup
 .env.production
-.env.dev
 !.env.example
 
 # Laravel
 /vendor
-/bootstrap/cache
 /storage/*.key
 /storage/pail
 /public/hot

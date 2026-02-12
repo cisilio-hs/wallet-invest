@@ -51,14 +51,17 @@ docker-compose exec app php artisan key:generate
 # 6. Run migrations
 docker-compose exec app php artisan migrate
 
-# 7. Build frontend
+# 7. Run Seeders
+docker-compose exec app php artisan db:seed
+
+# 8. Build frontend
 docker-compose exec vite npm run build
 
-# 8. Start development
+# 9. Start development
 docker-compose exec vite npm run dev
 ```
 
-Access at: http://localhost:5173
+Access at: http://localhost:8000
 
 ## Development Commands
 
@@ -83,7 +86,7 @@ docker-compose down
 
 ```
 app/
-├── Actions/              # Business logic (reusable for API/Mobile)
+├── Actions/             # Business logic (reusable for API/Mobile)
 │   ├── Wallets/
 │   └── Portfolios/
 ├── Http/
@@ -95,8 +98,8 @@ app/
 └── ...
 
 resources/js/
-├── Pages/               # Inertia page components
-├── Components/          # Reusable React components
+├── Pages/              # Inertia page components
+├── Components/         # Reusable React components
 ├── Contexts/           # React contexts
 └── types/              # TypeScript type definitions
 ```

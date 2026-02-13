@@ -32,7 +32,7 @@ export interface Wallet extends Model {
 export interface Portfolio extends Model {
     wallet_id: number;
     name: string;
-    currency: 'BRL' | 'USD';
+    target_weight: number;
     wallet?: Wallet;
     assets?: WalletAsset[];
 }
@@ -94,7 +94,7 @@ export interface WalletFormData {
 export interface PortfolioFormData {
     wallet_id: number;
     name: string;
-    currency: 'BRL' | 'USD';
+    target_weight: number;
 }
 
 export interface UpdateProfileFormData {

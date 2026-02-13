@@ -1,20 +1,14 @@
 import Card from '@/Components/Card';
 import DataTable from '@/Components/DataTable';
-import FormInputSelect from '@/Components/FormInputSelect';
+import FormInputPercentage from '@/Components/FormInputPercentage';
 import FormInputText from '@/Components/FormInputText';
 import Modal from '@/Components/Modal';
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { CurrencyDollarIcon, IdentificationIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { IdentificationIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useForm, router } from '@inertiajs/react';
 import { useState, FormEvent } from 'react';
-import { User, Wallet } from '@/types';
-
-interface Portfolio {
-    id: number;
-    name: string;
-    currency: string;
-}
+import { Portfolio, User, Wallet } from '@/types';
 
 interface EditProps {
     auth: {
@@ -34,7 +28,7 @@ export default function Edit({ auth, wallet }: EditProps) {
     const createForm = useForm({
         wallet_id: wallet.id,
         name: '',
-        currency: ''
+        target_weight: 25.0,
     });
 
     //Estado para editar o Portfolio
@@ -43,7 +37,7 @@ export default function Edit({ auth, wallet }: EditProps) {
     const editForm = useForm({
         id: 0,
         name: '',
-        currency: '',
+        target_weight: 0.0,
     });
 
     function submitWallet(e: FormEvent) {
@@ -63,7 +57,7 @@ export default function Edit({ auth, wallet }: EditProps) {
 
         editForm.setData({
             name: portfolio.name,
-            currency: portfolio.currency,
+            target_weight: portfolio.target_weight,
         });
     }
 
@@ -112,7 +106,6 @@ export default function Edit({ auth, wallet }: EditProps) {
                                     variant="top"
                                     placeholder="My Agressive Wallet"
                                     value={walletForm.data.name}
-                                    // icon={IdentificationIcon}
                                     onChange={e => walletForm.setData('name', e.target.value)}
                                     error={walletForm.errors.name}
                                 />
@@ -124,7 +117,7 @@ export default function Edit({ auth, wallet }: EditProps) {
                             title="Adicionar Portfolio"
                             footer={
                                 <div className="flex justify gap-4">
-                                    <PrimaryButton onClick={createPortfolio} className="px-4 py-2">
+                                    <PrimaryButton onClick={(createPortfolio)} className="px-4 py-2">
                                         Save
                                     </PrimaryButton>
                                 </div>
@@ -141,28 +134,35 @@ export default function Edit({ auth, wallet }: EditProps) {
                                     error={createForm.errors.name}
                                 />
 
-                                <FormInputSelect
-                                    label="Currency"
+                                <FormInputPercentage
+                                    label="Target Weight"
                                     variant="top"
-                                    error={createForm.errors.currency}
-                                    value={createForm.data.currency}
-                                    onChange={e => createForm.setData("currency", e.target.value)}
-                                    icon={CurrencyDollarIcon}
-                                >
-                                    <option value="">Selecione...</option>
-                                    <option value="BRL">BRL</option>
-                                    <option value="USD">USD</option>
-                                </FormInputSelect>
+                                    placeholder="25.00"
+                                    value={createForm.data.target_weight}
+                                    onChange={e => createForm.setData("target_weight", Number(e.target.value))}
+                                    error={createForm.errors.target_weight}
+                                />
                             </div>
                         </Card>
                     </div>
                 </div>
-                <Card title="Portfolios">
+                <Card 
+                    title={
+                        <div className='flex'>
+                            Portfolios
+                            <div className='grow' />
+                            Total: { wallet.portfolios?.reduce((acc, p)=> acc + p.target_weight, 0) }%
+                        </div>
+                        }>
                     <DataTable<Portfolio>
                         data={wallet.portfolios || []}
                         columns={[
                             { key: "name", label: "Name", grow: true },
-                            { key: "currency", label: "Currency" },
+                            { 
+                                key: "target_weight", 
+                                label: "Target %",
+                                render: (item) => `${item.target_weight}%`
+                            },
                         ]}
                         actions={(item) => (
                             <div className='flex flex-row space-x-2'>
@@ -218,18 +218,13 @@ export default function Edit({ auth, wallet }: EditProps) {
                             error={editForm.errors.name}
                         />
 
-                        <FormInputSelect
-                            label="Currency"
+                        <FormInputPercentage
+                            label="Target Weight"
                             variant="top"
-                            error={editForm.errors.currency}
-                            value={editForm.data.currency}
-                            onChange={e => editForm.setData("currency", e.target.value)}
-                            icon={CurrencyDollarIcon}
-                        >
-                            <option value="">Selecione...</option>
-                            <option value="BRL">BRL</option>
-                            <option value="USD">USD</option>
-                        </FormInputSelect>
+                            value={editForm.data.target_weight}
+                            onChange={e => editForm.setData("target_weight", Number(e.target.value))}
+                            error={editForm.errors.target_weight}
+                        />
                     </div>
                 </Card>
 

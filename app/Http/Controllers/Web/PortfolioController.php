@@ -41,7 +41,6 @@ class PortfolioController extends Controller
         $createPortfolio->execute(
             wallet: $wallet,
             name: $request->name,
-            currency: $request->currency,
             targetWeight: $request->target_weight ?? 0.0
         );
 

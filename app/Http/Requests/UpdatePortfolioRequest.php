@@ -23,7 +23,7 @@ class UpdatePortfolioRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'currency' => ['required', 'string', 'size:3'],
+            'target_weight' => ['decimal:0,2'],
         ];
     }
 }

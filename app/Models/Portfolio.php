@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $wallet_id
  * @property string $name
- * @property string $currency
+ * @property float $target_weight
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -24,7 +24,11 @@ class Portfolio extends Model
     protected $fillable = [
         'wallet_id',
         'name',
-        'currency',
+        'target_weight',
+    ];
+
+    protected $casts = [
+        'target_weight' => 'float',
     ];
 
     /**

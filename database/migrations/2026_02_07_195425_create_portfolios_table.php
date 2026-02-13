@@ -19,7 +19,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->string('name');
-            $table->string('currency', 3); 
+            $table->decimal('target_weight', 5, 2);
             $table->timestamps();
         });
     }

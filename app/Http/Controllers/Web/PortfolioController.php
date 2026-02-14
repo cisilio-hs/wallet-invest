@@ -10,6 +10,7 @@ use App\Http\Requests\StorePortfolioRequest;
 use App\Http\Requests\UpdatePortfolioRequest;
 use App\Models\Portfolio;
 use App\Models\Wallet;
+use Inertia\Inertia;
 
 class PortfolioController extends Controller
 {
@@ -60,7 +61,13 @@ class PortfolioController extends Controller
      */
     public function edit(Portfolio $portfolio)
     {
-        // To be implemented
+        $this->authorize('update', $portfolio);
+
+        $portfolio->load('walletAssets.asset');
+
+        return Inertia::render('Portfolio/Edit', [
+            'portfolio' => $portfolio
+        ]);
     }
 
     /**

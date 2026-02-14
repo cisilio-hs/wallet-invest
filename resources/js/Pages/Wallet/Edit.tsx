@@ -5,7 +5,7 @@ import FormInputText from '@/Components/FormInputText';
 import Modal from '@/Components/Modal';
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { IdentificationIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, IdentificationIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useForm, router } from '@inertiajs/react';
 import { useState, FormEvent } from 'react';
 import { Portfolio, User, Wallet } from '@/types';
@@ -28,7 +28,7 @@ export default function Edit({ auth, wallet }: EditProps) {
     const createForm = useForm({
         wallet_id: wallet.id,
         name: '',
-        target_weight: 25.0,
+        target_weight: 0.0,
     });
 
     //Estado para editar o Portfolio
@@ -148,24 +148,36 @@ export default function Edit({ auth, wallet }: EditProps) {
                 </div>
                 <Card 
                     title={
-                        <div className='flex'>
-                            Portfolios
-                            <div className='grow' />
-                            Total: { wallet.portfolios?.reduce((acc, p)=> acc + p.target_weight, 0) }%
+                        <div className='flex justify-between'>
+                            <span> Portfolios </span>
+                            <span> Total: { wallet.portfolios?.reduce((acc, p)=> acc + p.target_weight, 0) }% </span>
                         </div>
                         }>
                     <DataTable<Portfolio>
                         data={wallet.portfolios || []}
                         columns={[
                             { key: "name", label: "Name", grow: true },
+                            {
+                                key: "wallet_assets",
+                                label: "Assets",
+                                render: (item) => `${item.wallet_assets?.length || 0}`
+                            },
                             { 
                                 key: "target_weight", 
                                 label: "Target %",
                                 render: (item) => `${item.target_weight}%`
-                            },
+                            }
                         ]}
                         actions={(item) => (
                             <div className='flex flex-row space-x-2'>
+                                <PrimaryButton
+                                    onClick={() => router.get(route('portfolios.edit', item.id))}
+                                    className="p-1 bg-blue-600"
+                                    title="View Portfolio"
+                                >
+                                    <EyeIcon className="h-4 w-4"/>
+                                </PrimaryButton>
+
                                 <PrimaryButton
                                     onClick={() => openEditModal(item)}
                                     className="p-1"

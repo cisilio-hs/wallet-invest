@@ -31,157 +31,65 @@ Complete development roadmap for the Wallet Invest application.
 
 ---
 
-## 📋 Phase 1: Portfolio & Scoring Foundation (PLANNED)
+## ✅ Phase 1: Portfolio Management (COMPLETED)
 
-### Database Schema
-
-#### 1.1 Create `portfolios` table
-**Fields:**
-- `id` - bigint, primary key
-- `wallet_id` - bigint, foreign key → wallets
-- `name` - string (e.g., "FIIs-tijolo", "Internacional")
-- `target_weight` - decimal(5,2) (percentage, e.g., 25.00)
-- `timestamps`
-
-**Relationships:**
-- Portfolio belongsTo Wallet
-- Portfolio hasMany ScoringQuestion
-- Portfolio hasMany Asset
-
-#### 1.2 Create `scoring_questions` table
-**Fields:**
-- `id` - bigint, primary key
-- `portfolio_id` - bigint, foreign key → portfolios
-- `question_text` - text (e.g., "DY >= 8%?")
-- `sort_order` - integer (for ordering questions)
-- `timestamps`
-
-**Relationships:**
-- ScoringQuestion belongsTo Portfolio
-
-#### 1.3 Update `assets` table
-**New Fields:**
-- `portfolio_id` - bigint, foreign key → portfolios
-- `asset_type` - enum: 'stock', 'fii', 'bond', 'crypto', 'reit'
-- Change `ticker` unique constraint to: `wallet_id + ticker`
-
-**Remove/Update:**
-- Remove `asset_type_id` (replace with enum)
-- Remove `wallet_id` foreign key from assets (moved to portfolios)
-
-**Relationships:**
-- Asset belongsTo Portfolio
-- Asset hasMany ScoringAnswer
-
-#### 1.4 Create `scoring_answers` table
-**Fields:**
-- `id` - bigint, primary key
-- `asset_id` - bigint, foreign key → assets
-- `scoring_question_id` - bigint, foreign key → scoring_questions
-- `answer` - boolean (true = +1, false = -1)
-- `timestamps`
-
-**Relationships:**
-- ScoringAnswer belongsTo Asset
-- ScoringAnswer belongsTo ScoringQuestion
-
-### Models
-
-#### 1.5 Create Portfolio Model
-**Methods:**
-- `wallet()` - belongsTo
-- `scoringQuestions()` - hasMany
-- `assets()` - hasMany
-- `calculateTotalScore()` - sum of all asset scores
-- `calculateAssetWeights()` - array of asset_id => weight%
-
-#### 1.6 Update Asset Model
-**New Relationships:**
-- `portfolio()` - belongsTo
-- `scoringAnswers()` - hasMany
-
-**New Methods:**
-- `calculateScore()` - sum of scoring answers
-- `isBuyable()` - score > 0
-
-#### 1.7 Create ScoringQuestion Model
-**Methods:**
-- `portfolio()` - belongsTo
-- `scoringAnswers()` - hasMany
-
-#### 1.8 Create ScoringAnswer Model
-**Methods:**
-- `asset()` - belongsTo
-- `scoringQuestion()` - belongsTo
-
-### Controllers
-
-#### 1.9 PortfolioController
-**Methods:**
-- `index()` - List portfolios in wallet
-- `create()` - Show create form
-- `store()` - Create new portfolio
-- `edit()` - Show edit form
-- `update()` - Update portfolio
-- `destroy()` - Delete portfolio
-
-#### 1.10 ScoringQuestionController
-**Methods:**
-- `index(Portfolio $portfolio)` - List questions
-- `store(Portfolio $portfolio)` - Add question
-- `update(ScoringQuestion $question)` - Edit question
-- `destroy(ScoringQuestion $question)` - Delete question
-
-### Frontend Components
-
-#### 1.11 Portfolio Management Pages
-- `Pages/Portfolio/Index.tsx` - List portfolios with target weights
-- `Pages/Portfolio/Create.tsx` - Create portfolio form
-- `Pages/Portfolio/Edit.tsx` - Edit portfolio form
-
-#### 1.12 Scoring Questions UI
-- `Components/ScoringQuestionManager.tsx` - CRUD for questions
-- `Components/QuestionForm.tsx` - Add/edit question form
+- [x] **Portfolio Model** - with target_weight
+- [x] **Portfolio Actions** - Create, Update, Delete
+- [x] **Portfolio Controller** - Web controller with Actions
+- [x] **Portfolio Form** - Create/Edit with percentage input
+- [x] **Wallet/Edit Page** - Manage portfolios within wallet
 
 ---
 
-## 📋 Phase 2: Asset Management (PLANNED)
+## 📋 Phase 2: Wallet Assets with Unlisted Support (IN PROGRESS)
 
-### Database & Models
+### 2.1 Backend Implementation (COMPLETED)
 
-#### 2.1 Asset CRUD
-**Backend:**
-- AssetController with full CRUD
-- Form requests for validation
+#### Database Schema ✅
+Migration `2026_02_07_195429_create_wallet_assets_table.php` already supports:
+- `asset_id` nullable → allows unlisted assets
+- `custom_name` text field → stores custom asset names  
+- Unique constraint `wallet_id + asset_id + custom_name`
 
-**Frontend:**
-- `Pages/Asset/Index.tsx` - List assets in portfolio
-- `Pages/Asset/Create.tsx` - Add new asset
-- `Pages/Asset/Edit.tsx` - Edit asset (price, quantity)
+#### Models ✅
+- [x] **WalletAsset Model** - Add custom_name to fillable, add accessors
+- [x] **Portfolio Model** - Add walletAssets relationship
 
-#### 2.2 Asset Form Fields
-- Ticker (unique per wallet)
-- Asset Type (dropdown: stock, fii, bond, crypto, reit)
-- Name (optional display name)
-- Current Price (manual entry)
-- Quantity (current holding)
+#### Validation ✅
+- [x] **StoreWalletAssetRequest** - Validate asset_id XOR custom_name
+- [x] **UpdateWalletAssetRequest** - Update validation rules
 
-### Scoring Answers
+#### Actions ✅
+- [x] **CreateWalletAsset** - Handle listed vs unlisted logic
+- [x] **UpdateWalletAsset** - Support switching types
+- [x] **DeleteWalletAsset** - Simple delete
 
-#### 2.3 Answer Scoring Questions
-**Component:**
-- `Components/AssetScoringForm.tsx` - Answer all questions for asset
-- Display score calculation in real-time
+#### Controllers & Routes ✅
+- [x] **WalletAssetController** - Full CRUD
+- [x] **Routes** - Resource routes for portfolio assets
 
-**Logic:**
-- Load all questions from asset's portfolio
-- Show Yes/No toggle for each
-- Calculate and display total score
+#### TypeScript Types ✅
+- [x] **Update WalletAsset interface** - Add custom_name, display_name, is_listed
+- [x] **Update Portfolio interface** - Add wallet_assets relationship
 
-#### 2.4 Score Display
-**Component:**
-- `Components/AssetScoreBadge.tsx` - Visual score indicator
-- Color coding: Green (>0), Gray (0), Red (<0)
+### 2.2 Frontend Implementation (NEXT)
+
+#### Portfolio Management
+- [ ] **Portfolio/Edit Page** - Create new page following Wallet Edit pattern
+  - [ ] Edit portfolio card (name, target_weight)
+  - [ ] Add asset card with form inputs (asset_id/custom_name, quantity, average_price)
+  - [ ] Assets list table
+- [ ] **Wallet/Edit Update** - Add eye icon to navigate to Portfolio Edit
+- [ ] **Routes** - Add portfolio.edit route
+
+#### Asset Management UI
+- [ ] **WalletAssetForm Component** - Form for adding/editing assets
+  - [ ] Text inputs for all fields (no AssetSelector yet)
+  - [ ] Validation display
+- [ ] **WalletAssetList Component** - Table showing portfolio assets
+  - [ ] Display listed assets (show ticker)
+  - [ ] Display unlisted assets (show custom_name)
+  - [ ] Edit/Delete actions
 
 ---
 
@@ -211,7 +119,7 @@ Complete development roadmap for the Wallet Invest application.
 - `Components/ScoreDistributionChart.tsx` - How scores distribute
 
 **Columns:**
-- Ticker
+- Ticker/Custom Name
 - Current Price × Quantity = Value
 - Score (with breakdown)
 - Weight % within portfolio
@@ -306,14 +214,13 @@ Complete development roadmap for the Wallet Invest application.
 
 ## 🎯 Current Priority
 
-**Next Step:** Phase 1 - Portfolio & Scoring Foundation
+**Next Step:** Phase 2.2 - Frontend Implementation
 
 **Focus:**
-1. Database migrations (portfolios, scoring_questions, scoring_answers)
-2. Update assets table structure
-3. Create models with relationships
-4. Basic CRUD for Portfolios
-5. Scoring Questions management
+1. Create Portfolio/Edit page with full asset management
+2. Update Wallet/Edit to add navigation to Portfolio Edit
+3. Create WalletAssetForm and WalletAssetList components
+4. Test listed vs unlisted asset creation
 
 ---
 
@@ -322,8 +229,9 @@ Complete development roadmap for the Wallet Invest application.
 | Phase | Status | Completion |
 |-------|--------|------------|
 | Phase 0: Foundation | ✅ Complete | 100% |
-| Phase 1: Portfolio & Scoring | ⏳ Planned | 0% |
-| Phase 2: Asset Management | 📋 Planned | 0% |
+| Phase 1: Portfolio | ✅ Complete | 100% |
+| Phase 2.1: Backend | ✅ Complete | 100% |
+| Phase 2.2: Frontend | 🚧 In Progress | 0% |
 | Phase 3: Dashboard | 📋 Planned | 0% |
 | Phase 4: Recommendation Engine | 📋 Planned | 0% |
 | Phase 5: Polish & Future | 📋 Planned | 0% |
@@ -335,6 +243,4 @@ Complete development roadmap for the Wallet Invest application.
 - All prices are manually entered (Phase 1-5)
 - No transaction history (current quantity only)
 - GoogleFinance integration planned for future phase
-- Scoring is independent per Portfolio (no question reuse)
-- Assets are unique per Wallet (ticker + wallet_id)
-- Buy recommendations only (no sell suggestions yet)
+- Focus: Current state management + buy recommendations

@@ -11,7 +11,7 @@ class UpdateWalletAssetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class UpdateWalletAssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'score' => ['required', 'integer', 'min:0', 'max:4294967295'],
+            'quantity' => ['required', 'numeric', 'min:0.0000000001'],
+            'average_price' => ['required', 'numeric', 'min:0'],
         ];
     }
 }

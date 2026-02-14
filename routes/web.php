@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\WalletController;
+use App\Http\Controllers\Web\WalletAssetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,6 +30,11 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('wallets', WalletController::class);
     Route::resource('portfolios', PortfolioController::class);
+    
+    // Nested resource for portfolio assets
+    Route::resource('portfolios.wallet-assets', WalletAssetController::class)
+        ->only(['index', 'store', 'update', 'destroy'])
+        ->shallow();
 });
 
 require __DIR__.'/auth.php';

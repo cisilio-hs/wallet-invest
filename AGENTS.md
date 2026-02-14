@@ -47,6 +47,24 @@ Person → Wallet → Portfolio → Assets
 - `crypto`: Bitcoin, Ethereum, etc.
 - `reit`: Real Estate Investment Trusts (US)
 
+### Wallet Assets - Listed vs Unlisted
+
+**Listed Assets** (from global assets table):
+- Use `asset_id` foreign key
+- Have ticker symbols (ABEV3, PETR4, AAPL)
+- Pulled from B3, NASDAQ, etc.
+
+**Unlisted Assets** (custom per user):
+- Use `custom_name` field
+- Examples: "Physical Gold", "CDB Nubank", "BTC Wallet"
+- Scoped to user's wallet only
+- Not in global assets table
+
+**Rules:**
+- Either `asset_id` OR `custom_name` must be present, never both
+- Same wallet cannot have duplicate entries
+- Both types support quantity and average_price tracking
+
 ### Current Scope
 - ✅ TypeScript migration completed
 - ✅ PHP 8.5 with model annotations

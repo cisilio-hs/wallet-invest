@@ -24,13 +24,16 @@ return new class extends Migration
 
             $table->foreignId('asset_id')
                 ->constrained()
-                ->cascadeOnDelete();
+                ->cascadeOnDelete()
+                ->nullable();
 
+            $table->string('custom_name')->nullable();
+            $table->unsignedInteger('score')->default(0);
             $table->decimal('quantity', 24, 10);
             $table->decimal('average_price', 15, 6);
             $table->timestamps();
 
-            $table->unique(['wallet_id', 'asset_id']);
+            $table->unique(['wallet_id', 'asset_id', 'custom_name']);
         });
     }
 

@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $updated_at
  *
  * @property-read \App\Models\Wallet $wallet
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WalletAsset> $assets
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WalletAsset> $walletAssets
  */
 class Portfolio extends Model
 {
@@ -42,7 +42,7 @@ class Portfolio extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<WalletAsset, $this>
      */
-    public function assets()
+    public function walletAssets()
     {
         return $this->hasMany(WalletAsset::class);
     }

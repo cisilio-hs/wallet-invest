@@ -1,6 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link } from '@inertiajs/react';
+import { Link, router, useForm } from '@inertiajs/react';
 import { User, Wallet } from '@/types';
+import DataTable from '@/Components/DataTable';
+import PrimaryButton from '@/Components/PrimaryButton';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import Card from '@/Components/Card';
+import FormInputText from '@/Components/FormInputText';
+import { FormEvent } from 'react';
 
 interface IndexProps {
     auth: {
@@ -10,49 +16,87 @@ interface IndexProps {
 }
 
 export default function Index({ auth, wallets }: IndexProps) {
+
+    const walletForm = useForm({
+        name: ''
+    });
+    
+    function submitWallet(e: FormEvent) {
+        e.preventDefault();
+        walletForm.post(route('wallets.store'), {
+            onSuccess: () => walletForm.reset()
+        });
+    }
+
+    function deleteWallet(id: number) {
+        if (confirm('Deseja realmente excluir este Wallet?')) {
+            router.delete(route('wallets.destroy', id));
+        }
+    }
+
     return (
-        <AuthenticatedLayout>
-            <div className="p-6">
-                <h1 className="text-xl mb-4">Minhas Carteiras</h1>
+        <AuthenticatedLayout
+            header={
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                    My Wallets
+                </h2>
+            }
+        >
+            <div className="p-6 space-y-6">
 
-                <Link
-                    href={route('wallets.create')}
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                <Card
+                    title="Add Wallet"
+                    footer={
+                        <div className="flex justify gap-4">
+                            <PrimaryButton onClick={submitWallet} className="px-4 py-2">
+                                Save
+                            </PrimaryButton>
+                        </div>
+                    }
                 >
-                    Nova Carteira
-                </Link>
+                    <div>
+                        <FormInputText
+                            label="Name"
+                            variant="top"
+                            placeholder="My Agressive Wallet"
+                            value={walletForm.data.name}
+                            onChange={e => walletForm.setData('name', e.target.value)}
+                            error={walletForm.errors.name}
+                        />
+                    </div>
+                </Card>
 
-                <table className="mt-4 w-full">
-                    <thead>
-                        <tr>
-                            <th className="text-left">Nome</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {wallets.map(wallet => (
-                            <tr key={wallet.id}>
-                                <td>{wallet.name}</td>
-                                <td>
-                                    <Link
-                                        href={route('wallets.show', wallet.id)}
-                                        className="text-blue-500 mr-2"
-                                    >
-                                        Entrar
-                                    </Link>
-                                </td>
-                                <td>
-                                    <Link
-                                        href={route('wallets.edit', wallet.id)}
-                                        className="text-blue-500 mr-2"
-                                    >
-                                        Editar
-                                    </Link>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <Card title="Wallets">
+                    <DataTable<Wallet>
+                        data={wallets || []}
+                        columns={[
+                            { key: "name", label: "Name", grow: true },
+                            { 
+                                key: "portfolios",
+                                label: "Portfolios",
+                                render: (item) => `${item.portfolios?.length || 0}`
+                            },
+                        ]}
+                        actions={(item) => (
+                            <div className='flex flex-row space-x-2'>
+                            
+                                <PrimaryButton
+                                    onClick={() => router.get(route('wallets.edit', item.id))}
+                                    className="p-1"
+                                >
+                                    <PencilSquareIcon className="h-4 w-4"/>
+                                </PrimaryButton>
+                                <PrimaryButton
+                                    onClick={() => deleteWallet(item.id)}
+                                    className="p-1 bg-red-800"
+                                >
+                                    <TrashIcon className="h-4 w-4"/>
+                                </PrimaryButton>
+                            </div>
+                        )}
+                    />
+                </Card>
+
             </div>
         </AuthenticatedLayout>
     );

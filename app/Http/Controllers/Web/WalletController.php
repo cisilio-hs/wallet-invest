@@ -66,7 +66,7 @@ class WalletController extends Controller
     {
         $this->authorize('update', $wallet);
 
-        $wallet->load("portfolios");
+        $wallet->load(['portfolios.walletAssets']);
 
         return Inertia::render('Wallet/Edit', [
             'wallet' => $wallet

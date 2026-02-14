@@ -20,6 +20,7 @@ class ListWallets
     public function execute(User $user): Collection
     {
         return Wallet::where('person_id', $user->person->id)
+            ->with('portfolios')
             ->get();
     }
 }

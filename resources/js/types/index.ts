@@ -34,7 +34,7 @@ export interface Portfolio extends Model {
     name: string;
     target_weight: number;
     wallet?: Wallet;
-    assets?: WalletAsset[];
+    wallet_assets?: WalletAsset[];
 }
 
 export interface Asset extends Model {
@@ -56,12 +56,18 @@ export interface AssetType extends Model {
 export interface WalletAsset extends Model {
     wallet_id: number;
     portfolio_id: number;
-    asset_id: number;
+    asset_id?: number;
+    custom_name?: string;
+    score: number;
     quantity: number;
     average_price: number;
     wallet?: Wallet;
     portfolio?: Portfolio;
     asset?: Asset;
+    
+    // Computed properties from backend
+    display_name: string;
+    is_listed: boolean;
 }
 
 // Inertia shared props

@@ -17,7 +17,6 @@ use Illuminate\Notifications\Notifiable;
  * @property int|null $person_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
  * @property-read \App\Models\Person|null $person
  */
 class User extends Authenticatable
@@ -34,6 +33,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'person_id',
     ];
 
     /**

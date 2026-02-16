@@ -4,12 +4,18 @@ import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
+interface PersonData {
+    phone: string | null;
+    birthday: string | null;
+}
+
 interface EditProps {
     mustVerifyEmail: boolean;
     status?: string;
+    person: PersonData | null;
 }
 
-export default function Edit({ mustVerifyEmail, status }: EditProps) {
+export default function Edit({ mustVerifyEmail, status, person }: EditProps) {
     return (
         <AuthenticatedLayout
             header={
@@ -26,6 +32,7 @@ export default function Edit({ mustVerifyEmail, status }: EditProps) {
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
+                            person={person}
                             className="max-w-xl"
                         />
                     </div>

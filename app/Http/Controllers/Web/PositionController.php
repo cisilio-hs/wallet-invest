@@ -1,18 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
-use App\Http\Requests\StoreWalletAssetRequest;
-use App\Http\Requests\UpdateWalletAssetRequest;
-use App\Models\WalletAsset;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StorePositionRequest;
+use App\Http\Requests\UpdatePositionRequest;
+use App\Models\Position;
 
-class WalletAssetController extends Controller
+class PositionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        //
     }
 
     /**
@@ -20,40 +22,46 @@ class WalletAssetController extends Controller
      */
     public function create()
     {
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreWalletAssetRequest $request)
+    public function store(StorePositionRequest $request)
     {
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(WalletAsset $walletAsset)
+    public function show(Position $position)
     {
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(WalletAsset $walletAsset)
+    public function edit(Position $position)
     {
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateWalletAssetRequest $request, WalletAsset $walletAsset)
+    public function update(UpdatePositionRequest $request, Position $position)
     {
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(WalletAsset $walletAsset)
+    public function destroy(Position $position)
     {
+        //
     }
 }

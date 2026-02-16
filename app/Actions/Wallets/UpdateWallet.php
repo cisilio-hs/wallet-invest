@@ -12,13 +12,12 @@ class UpdateWallet
     /**
      * Execute the action.
      *
-     * @param Wallet $wallet
-     * @param array<string, mixed> $data
-     * @return Wallet
+     * @param  array<string, mixed>  $data
      */
     public function execute(Wallet $wallet, array $data): Wallet
     {
         $wallet->update($data);
+
         return $wallet->fresh();
     }
 }

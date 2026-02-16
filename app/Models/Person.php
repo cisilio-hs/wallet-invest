@@ -2,21 +2,30 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
  * @property string $name
- * @property string $phone
- * @property string $birthday
+ * @property string|null $phone
+ * @property string|null $birthday
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Wallet> $wallets
  */
 class Person extends Model
 {
+    /** @use HasFactory<\Database\Factories\PersonFactory> */
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'phone',
+        'birthday',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<User, $this>
      */

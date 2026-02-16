@@ -12,9 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $target_weight
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
  * @property-read \App\Models\Wallet $wallet
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WalletAsset> $walletAssets
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WalletAllocation> $walletAllocations
  */
 class Portfolio extends Model
 {
@@ -40,10 +39,10 @@ class Portfolio extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<WalletAsset, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<WalletAllocation, $this>
      */
-    public function walletAssets()
+    public function walletAllocations()
     {
-        return $this->hasMany(WalletAsset::class);
+        return $this->hasMany(WalletAllocation::class);
     }
 }

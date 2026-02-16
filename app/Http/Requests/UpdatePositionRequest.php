@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateWalletAssetRequest extends FormRequest
+class UpdatePositionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,9 +22,7 @@ class UpdateWalletAssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'score' => ['required', 'integer', 'min:0', 'max:4294967295'],
-            'quantity' => ['required', 'numeric', 'min:0.0000000001'],
-            'average_price' => ['required', 'numeric', 'min:0'],
+            //
         ];
     }
 }

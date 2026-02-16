@@ -24,9 +24,13 @@ export interface Person extends Model {
 export interface Wallet extends Model {
     person_id: number;
     name: string;
+    is_dirty: boolean;
     person?: Person;
     portfolios?: Portfolio[];
-    assets?: WalletAsset[];
+    customAssets?: CustomAsset[];
+    walletAllocations?: WalletAllocation[];
+    transactions?: Transaction[];
+    positions?: Position[];
 }
 
 export interface Portfolio extends Model {
@@ -34,7 +38,7 @@ export interface Portfolio extends Model {
     name: string;
     target_weight: number;
     wallet?: Wallet;
-    wallet_assets?: WalletAsset[];
+    walletAllocations?: WalletAllocation[];
 }
 
 export interface Asset extends Model {
@@ -43,8 +47,12 @@ export interface Asset extends Model {
     asset_type_id: number;
     market: string;
     currency: string;
+    minimum_order_quantity?: number;
+    minimum_order_value?: number;
     type?: AssetType;
-    walletAssets?: WalletAsset[];
+    walletAllocations?: WalletAllocation[];
+    transactions?: Transaction[];
+    positions?: Position[];
 }
 
 export interface AssetType extends Model {
@@ -53,21 +61,56 @@ export interface AssetType extends Model {
     assets?: Asset[];
 }
 
-export interface WalletAsset extends Model {
+export interface CustomAsset extends Model {
+    wallet_id: number;
+    asset_type_id?: number;
+    name: string;
+    currency: string;
+    wallet?: Wallet;
+    assetType?: AssetType;
+    walletAllocations?: WalletAllocation[];
+    transactions?: Transaction[];
+    positions?: Position[];
+}
+
+export interface WalletAllocation extends Model {
     wallet_id: number;
     portfolio_id: number;
     asset_id?: number;
-    custom_name?: string;
+    custom_asset_id?: number;
     score: number;
-    quantity: number;
-    average_price: number;
     wallet?: Wallet;
     portfolio?: Portfolio;
     asset?: Asset;
-    
-    // Computed properties from backend
-    display_name: string;
-    is_listed: boolean;
+    customAsset?: CustomAsset;
+}
+
+export interface Transaction extends Model {
+    wallet_id: number;
+    asset_id?: number;
+    custom_asset_id?: number;
+    quantity: number;
+    unit_price: number;
+    gross_amount: number;
+    currency: string;
+    traded_at: string;
+    wallet?: Wallet;
+    asset?: Asset;
+    customAsset?: CustomAsset;
+    // Computed property
+    type: 'buy' | 'sell';
+}
+
+export interface Position extends Model {
+    wallet_id: number;
+    asset_id?: number;
+    custom_asset_id?: number;
+    quantity: number;
+    average_price: number;
+    is_dirty: boolean;
+    wallet?: Wallet;
+    asset?: Asset;
+    customAsset?: CustomAsset;
 }
 
 // Inertia shared props
@@ -106,6 +149,8 @@ export interface PortfolioFormData {
 export interface UpdateProfileFormData {
     name: string;
     email: string;
+    phone: string;
+    birthday: string;
 }
 
 export interface UpdatePasswordFormData {

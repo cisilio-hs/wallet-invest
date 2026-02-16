@@ -12,10 +12,6 @@ class CreateWallet
 {
     /**
      * Execute the action.
-     *
-     * @param User $user
-     * @param string $name
-     * @return Wallet
      */
     public function execute(User $user, string $name): Wallet
     {

@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Portfolio;
 use App\Models\User;
 use App\Models\Wallet;
-use Illuminate\Auth\Access\Response;
 
 class PortfolioPolicy
 {

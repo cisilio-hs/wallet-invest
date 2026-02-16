@@ -160,7 +160,7 @@ export default function Edit({ auth, wallet }: EditProps) {
                             {
                                 key: "wallet_assets",
                                 label: "Assets",
-                                render: (item) => `${item.wallet_assets?.length || 0}`
+                                render: (item) => `${item.walletAllocations?.length || 0}`
                             },
                             { 
                                 key: "target_weight", 

@@ -18,10 +18,13 @@ return new class extends Migration
 
             $table->foreignId('asset_type_id')
                 ->constrained('asset_types');
-            
+
             $table->enum('market', ['BR', 'US', 'GLOBAL']);
             $table->string('currency', 3)->default('BRL'); // ISO 4217
-            
+
+            $table->decimal('minimum_order_quantity', 24, 10)->nullable();
+            $table->decimal('minimum_order_value', 15, 6)->nullable();
+
             $table->timestamps();
         });
     }

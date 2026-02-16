@@ -12,13 +12,12 @@ class UpdatePortfolio
     /**
      * Execute the action.
      *
-     * @param Portfolio $portfolio
-     * @param array<string, mixed> $data
-     * @return Portfolio
+     * @param  array<string, mixed>  $data
      */
     public function execute(Portfolio $portfolio, array $data): Portfolio
     {
         $portfolio->update($data);
+
         return $portfolio->fresh();
     }
 }

@@ -7,9 +7,15 @@ import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { UpdateProfileFormData, User } from '@/types';
 
+interface PersonData {
+    phone: string | null;
+    birthday: string | null;
+}
+
 interface UpdateProfileInformationProps {
     mustVerifyEmail: boolean;
     status?: string;
+    person: PersonData | null;
     className?: string;
 }
 
@@ -23,6 +29,7 @@ interface PageProps {
 export default function UpdateProfileInformation({
     mustVerifyEmail,
     status,
+    person,
     className = '',
 }: UpdateProfileInformationProps) {
     const user = usePage<PageProps>().props.auth.user;
@@ -31,6 +38,8 @@ export default function UpdateProfileInformation({
         useForm<UpdateProfileFormData>({
             name: user.name,
             email: user.email,
+            phone: person?.phone || '',
+            birthday: person?.birthday || '',
         });
 
     const submit = (e: FormEvent<HTMLFormElement>) => {
@@ -82,6 +91,36 @@ export default function UpdateProfileInformation({
                     />
 
                     <InputError className="mt-2" message={errors.email} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="phone" value="Phone" />
+
+                    <TextInput
+                        id="phone"
+                        type="tel"
+                        className="mt-1 block w-full"
+                        value={data.phone}
+                        onChange={(e) => setData('phone', e.target.value)}
+                        autoComplete="tel"
+                    />
+
+                    <InputError className="mt-2" message={errors.phone} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="birthday" value="Birthday" />
+
+                    <TextInput
+                        id="birthday"
+                        type="date"
+                        className="mt-1 block w-full"
+                        value={data.birthday}
+                        onChange={(e) => setData('birthday', e.target.value)}
+                        autoComplete="bday"
+                    />
+
+                    <InputError className="mt-2" message={errors.birthday} />
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (

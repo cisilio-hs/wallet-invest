@@ -24,7 +24,7 @@ class WalletController extends Controller
         $wallets = $listWallets->execute(request()->user());
 
         return Inertia::render('Wallet/Index', [
-            'wallets' => $wallets
+            'wallets' => $wallets,
         ]);
     }
 
@@ -69,7 +69,7 @@ class WalletController extends Controller
         $wallet->load(['portfolios.walletAssets']);
 
         return Inertia::render('Wallet/Edit', [
-            'wallet' => $wallet
+            'wallet' => $wallet,
         ]);
     }
 

@@ -1,8 +1,37 @@
-# Wallet Assets - Unlisted Support Implementation
+# Wallet Assets - Unlisted Support Implementation [ABORTED]
 
 **Date:** 2026-02-12  
-**Status:** Backend Complete - Frontend In Progress  
+**Status:** ABORTED - Architecture Changed to Transactions-Based  
 **Phase:** Phase 2 - Wallet Assets Management
+
+## Note
+
+This implementation has been **aborted** in favor of a new transactions-based architecture defined in `DatabaseStructurePlan.md`.
+
+The current implementation (wallet_assets table with score field) will be migrated to the new architecture with:
+- `transactions` table as source of truth
+- `custom_assets` table for unlisted assets  
+- `wallet_allocations` table for strategy/scoring
+- `positions` table as projection/cache
+
+## Legacy Implementation Status
+
+### Completed ✅
+- Database migration with unsignedInteger score
+- Models with accessors
+- Validation rules
+- Actions layer
+- Controllers & routes
+- TypeScript types
+
+### Not Completed ❌
+- Frontend AssetSelector component
+- Full asset creation flow
+- Asset editing functionality
+
+## Migration Path
+
+See new task file for transactions-based implementation.
 
 ## Overview
 

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Person;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class InitialUserSeeder extends Seeder
@@ -15,7 +15,7 @@ class InitialUserSeeder extends Seeder
             'id' => 1,
             'name' => 'Admin',
             'phone' => '00000000000',
-            'birthday' => '2000-01-01'
+            'birthday' => '2000-01-01',
         ]);
 
         User::create([
@@ -23,7 +23,7 @@ class InitialUserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@local.com',
             'password' => Hash::make('0000'),
-            'person_id' => $person->id
+            'person_id' => $person->id,
         ]);
     }
 }

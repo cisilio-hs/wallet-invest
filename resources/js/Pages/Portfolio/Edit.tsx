@@ -7,7 +7,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { IdentificationIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useForm, router } from '@inertiajs/react';
 import { FormEvent } from 'react';
-import { Portfolio, User, WalletAsset } from '@/types';
+import { Portfolio, User, WalletAllocation } from '@/types';
 
 interface EditProps {
     auth: {
@@ -24,13 +24,12 @@ export default function Edit({ auth, portfolio }: EditProps) {
         target_weight: portfolio.target_weight,
     });
 
-    // Form para criar asset
-    const assetForm = useForm({
+    // Form para criar allocation
+    const allocationForm = useForm({
         portfolio_id: portfolio.id,
         asset_id: '',
-        custom_name: '',
-        quantity: '',
-        average_price: '',
+        custom_asset_id: '',
+        score: '0',
     });
 
     function submitPortfolio(e: FormEvent) {
@@ -38,15 +37,16 @@ export default function Edit({ auth, portfolio }: EditProps) {
         portfolioForm.put(route('portfolios.update', portfolio.id));
     }
 
-    function createAsset(e: FormEvent) {
+    function createAllocation(e: FormEvent) {
         e.preventDefault();
-        // TODO: Implement asset creation
-        console.log('Create asset:', assetForm.data);
+        // TODO: Implement allocation creation
+        console.log('Create allocation:', allocationForm.data);
     }
 
-    function deleteAsset(id: number) {
-        if (confirm('Deseja realmente excluir este asset?')) {
-            router.delete(route('wallet-assets.destroy', id));
+    function deleteAllocation(id: number) {
+        if (confirm('Deseja realmente excluir esta alocação?')) {
+            // TODO: Implement allocation deletion
+            console.log('Delete allocation:', id);
         }
     }
 
@@ -96,10 +96,10 @@ export default function Edit({ auth, portfolio }: EditProps) {
                     </div>
                     <div className="grow">
                         <Card
-                            title="Adicionar Asset"
+                            title="Adicionar Alocação"
                             footer={
                                 <div className="flex justify gap-4">
-                                    <PrimaryButton onClick={createAsset} className="px-4 py-2">
+                                    <PrimaryButton onClick={createAllocation} className="px-4 py-2">
                                         Save
                                     </PrimaryButton>
                                 </div>
@@ -110,66 +110,52 @@ export default function Edit({ auth, portfolio }: EditProps) {
                                     label="Asset ID (Listed)"
                                     variant="top"
                                     placeholder="123"
-                                    value={assetForm.data.asset_id}
-                                    onChange={e => assetForm.setData('asset_id', e.target.value)}
-                                    error={assetForm.errors.asset_id}
+                                    value={allocationForm.data.asset_id}
+                                    onChange={e => allocationForm.setData('asset_id', e.target.value)}
+                                    error={allocationForm.errors.asset_id}
                                 />
 
                                 <FormInputText
-                                    label="Custom Name (Unlisted)"
+                                    label="Custom Asset ID (Unlisted)"
                                     variant="top"
-                                    placeholder="Physical Gold"
-                                    value={assetForm.data.custom_name}
-                                    onChange={e => assetForm.setData('custom_name', e.target.value)}
-                                    error={assetForm.errors.custom_name}
+                                    placeholder="456"
+                                    value={allocationForm.data.custom_asset_id}
+                                    onChange={e => allocationForm.setData('custom_asset_id', e.target.value)}
+                                    error={allocationForm.errors.custom_asset_id}
                                 />
 
                                 <FormInputText
-                                    label="Quantity"
+                                    label="Score"
                                     variant="top"
-                                    placeholder="10"
-                                    value={assetForm.data.quantity}
-                                    onChange={e => assetForm.setData('quantity', e.target.value)}
-                                    error={assetForm.errors.quantity}
-                                />
-
-                                <FormInputText
-                                    label="Average Price"
-                                    variant="top"
-                                    placeholder="50.00"
-                                    value={assetForm.data.average_price}
-                                    onChange={e => assetForm.setData('average_price', e.target.value)}
-                                    error={assetForm.errors.average_price}
+                                    placeholder="0"
+                                    value={allocationForm.data.score}
+                                    onChange={e => allocationForm.setData('score', e.target.value)}
+                                    error={allocationForm.errors.score}
                                 />
                             </div>
                         </Card>
                     </div>
                 </div>
 
-                <Card title="Assets">
-                    <DataTable<WalletAsset>
-                        data={portfolio.wallet_assets || []}
+                <Card title="Allocations">
+                    <DataTable<WalletAllocation>
+                        data={portfolio.walletAllocations || []}
                         columns={[
                             {
-                                key: "display_name",
-                                label: "Name",
+                                key: "asset",
+                                label: "Asset",
                                 grow: true,
-                                render: (item) => item.display_name
+                                render: (item) => item.asset?.name || item.customAsset?.name || '-'
                             },
                             {
-                                key: "quantity",
-                                label: "Quantity",
-                                render: (item) => item.quantity.toString()
+                                key: "score",
+                                label: "Score",
+                                render: (item) => item.score.toString()
                             },
                             {
-                                key: "average_price",
-                                label: "Avg Price",
-                                render: (item) => `R$ ${item.average_price.toFixed(2)}`
-                            },
-                            {
-                                key: "is_listed",
+                                key: "type",
                                 label: "Type",
-                                render: (item) => item.is_listed ? 'Listed' : 'Unlisted'
+                                render: (item) => item.asset_id ? 'Listed' : 'Unlisted'
                             },
                         ]}
                         actions={(item) => (
@@ -182,7 +168,7 @@ export default function Edit({ auth, portfolio }: EditProps) {
                                 </PrimaryButton>
 
                                 <PrimaryButton
-                                    onClick={() => deleteAsset(item.id)}
+                                    onClick={() => deleteAllocation(item.id)}
                                     className="p-1 bg-red-800"
                                 >
                                     <TrashIcon className="h-4 w-4"/>

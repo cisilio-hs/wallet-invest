@@ -1,6 +1,26 @@
 # ROADMAP.md - Smart Portfolio Allocator
 
-Complete development roadmap for the Wallet Invest application.
+Complete development roadmap for the Wallet Invest application using **Transactions-Based Architecture**.
+
+## Architecture Overview
+
+```
+transactions (source of truth)
+        ↓
+positions (projection/cache)
+        ↓
+dashboard / recommendation
+
+wallet_allocations (strategy layer)
+```
+
+### Core Principles
+- **Transactions** = Source of truth (all buy/sell operations)
+- **Positions** = Projection/cache for fast reads (auto-calculated from transactions)
+- **Wallet Allocations** = User-defined strategy layer (scoring, weights)
+- **Custom Assets** = Unlisted assets (Gold, CDBs, etc.) separate from global catalog
+
+---
 
 ## ✅ Phase 0: Foundation (COMPLETED)
 
@@ -19,15 +39,7 @@ Complete development roadmap for the Wallet Invest application.
 - [x] **Testing Setup** - Pest configured
 - [x] **Linting** - Laravel Pint configured
 - [x] **Action Layer** - Business logic separated for API/Mobile readiness
-  - [x] `app/Actions/Wallets/` - CreateWallet, UpdateWallet, DeleteWallet, ListWallets
-  - [x] `app/Actions/Portfolios/` - CreatePortfolio, UpdatePortfolio, DeletePortfolio
-  - [x] Controllers moved to `Http/Controllers/Web/`
-  - [x] Controllers refactored to use Actions
-
-### Documentation
-- [x] **AGENTS.md** - Coding guidelines created
-- [x] **Project Purpose** - Documented in AGENTS.md
-- [x] **Task Convention** - opencode/tasks/ folder structure
+- [x] **Documentation** - AGENTS.md, task files
 
 ---
 
@@ -36,191 +48,169 @@ Complete development roadmap for the Wallet Invest application.
 - [x] **Portfolio Model** - with target_weight
 - [x] **Portfolio Actions** - Create, Update, Delete
 - [x] **Portfolio Controller** - Web controller with Actions
-- [x] **Portfolio Form** - Create/Edit with percentage input
 - [x] **Wallet/Edit Page** - Manage portfolios within wallet
 
 ---
 
-## 📋 Phase 2: Wallet Assets with Unlisted Support (IN PROGRESS)
+## 📋 Phase 2: Transactions-Based Architecture (NEW)
 
-### 2.1 Backend Implementation (COMPLETED)
+### Overview
+Replace direct wallet_assets approach with transactions-based ledger system.
 
-#### Database Schema ✅
-Migration `2026_02_07_195429_create_wallet_assets_table.php` already supports:
-- `asset_id` nullable → allows unlisted assets
-- `custom_name` text field → stores custom asset names  
-- Unique constraint `wallet_id + asset_id + custom_name`
+### 2.1 Database Schema
 
-#### Models ✅
-- [x] **WalletAsset Model** - Add custom_name to fillable, add accessors
-- [x] **Portfolio Model** - Add walletAssets relationship
+#### Updated Tables:
 
-#### Validation ✅
-- [x] **StoreWalletAssetRequest** - Validate asset_id XOR custom_name
-- [x] **UpdateWalletAssetRequest** - Update validation rules
+**assets** - Global listed assets (updated with order constraints)
+- `id`, `ticker`, `name`, `asset_type_id`, `market`, `currency`
+- **NEW:** `minimum_order_quantity` - Minimum quantity per order (e.g., 1 for BR stocks, 0.0001 for crypto)
+- **NEW:** `minimum_order_value` - Minimum value per order (e.g., $1 for fractional shares)
 
-#### Actions ✅
-- [x] **CreateWalletAsset** - Handle listed vs unlisted logic
-- [x] **UpdateWalletAsset** - Support switching types
-- [x] **DeleteWalletAsset** - Simple delete
+#### New Tables Required:
 
-#### Controllers & Routes ✅
-- [x] **WalletAssetController** - Full CRUD
-- [x] **Routes** - Resource routes for portfolio assets
+**custom_assets** - Unlisted assets (per wallet)
+- `id`, `wallet_id`, `name`, `asset_type_id`, `currency`
 
-#### TypeScript Types ✅
-- [x] **Update WalletAsset interface** - Add custom_name, display_name, is_listed
-- [x] **Update Portfolio interface** - Add wallet_assets relationship
+**wallet_allocations** - Strategy layer (scoring)
+- `id`, `wallet_id`, `portfolio_id`, `asset_id`, `custom_asset_id`, `score`
 
-### 2.2 Frontend Implementation (NEXT)
+**transactions** - Ledger (source of truth)
+- `id`, `wallet_id`, `asset_id`, `custom_asset_id`, `quantity`, `unit_price`, `gross_amount`, `currency`, `traded_at`
+- Quantity is signed: BUY = positive, SELL = negative
 
-#### Portfolio Management
-- [ ] **Portfolio/Edit Page** - Create new page following Wallet Edit pattern
-  - [ ] Edit portfolio card (name, target_weight)
-  - [ ] Add asset card with form inputs (asset_id/custom_name, quantity, average_price)
-  - [ ] Assets list table
-- [ ] **Wallet/Edit Update** - Add eye icon to navigate to Portfolio Edit
-- [ ] **Routes** - Add portfolio.edit route
+**positions** - Projection/cache
+- `id`, `wallet_id`, `asset_id`, `custom_asset_id`, `quantity`, `average_price`, `is_dirty`
 
-#### Asset Management UI
-- [ ] **WalletAssetForm Component** - Form for adding/editing assets
-  - [ ] Text inputs for all fields (no AssetSelector yet)
-  - [ ] Validation display
-- [ ] **WalletAssetList Component** - Table showing portfolio assets
-  - [ ] Display listed assets (show ticker)
-  - [ ] Display unlisted assets (show custom_name)
-  - [ ] Edit/Delete actions
+### 2.2 Implementation Steps
+
+#### Step 1: Custom Assets
+- [ ] Migration: Create `custom_assets` table
+- [ ] Model: CustomAsset with relationships
+- [ ] Actions: CreateCustomAsset, UpdateCustomAsset, DeleteCustomAsset
+- [ ] Controller: CustomAssetController
+- [ ] Frontend: CustomAsset management UI
+
+#### Step 2: Wallet Allocations
+- [ ] Migration: Create `wallet_allocations` table
+- [ ] Model: WalletAllocation with validation (asset_id XOR custom_asset_id)
+- [ ] Actions: CRUD for allocations with scoring
+- [ ] Controller: WalletAllocationController
+- [ ] Frontend: Allocation management with score input
+
+#### Step 3: Transactions (Ledger)
+- [ ] Migration: Create `transactions` table
+- [ ] Model: Transaction with computed type attribute
+- [ ] Actions: RecordTransaction, DeleteTransaction
+- [ ] Validation: Transaction rules (quantity signed, etc.)
+- [ ] Controller: TransactionController
+- [ ] Frontend: Transaction entry form
+
+#### Step 4: Positions (Projection)
+- [ ] Migration: Create `positions` table
+- [ ] Model: Position with is_dirty flag
+- [ ] Service: PositionConsolidationService
+  - Recalculate quantity from transactions
+  - Calculate average_price (FIFO)
+  - Clear is_dirty flag
+- [ ] Command: ConsolidatePositions (manual trigger)
+
+#### Step 5: Integration
+- [ ] Wallet.is_dirty flag
+- [ ] Auto-mark positions dirty on new transaction
+- [ ] Dashboard uses positions (fast read)
+- [ ] Recommendation engine uses positions + allocations
+
+### 2.3 Migration from Old System
+- [ ] Migrate existing wallet_assets → transactions
+- [ ] Create initial position records
+- [ ] Deprecate wallet_assets table (keep for reference)
 
 ---
 
-## 📋 Phase 3: Dashboard & Current State (PLANNED)
+## 📋 Phase 3: Dashboard & Current State
 
-### Portfolio Dashboard
-
-#### 3.1 Portfolio Overview Page
+### 3.1 Portfolio Dashboard
 **Route:** `/wallet/{wallet}/dashboard`
 
-**Components:**
-- `Components/PortfolioAllocationChart.tsx` - Pie chart of current weights
-- `Components/TargetVsCurrentBars.tsx` - Progress bars comparing target vs actual
-- `Components/PortfolioCard.tsx` - Summary card per portfolio
-
-**Data Displayed:**
-- Total wallet value
-- Current allocation by portfolio
-- Drift from target (absolute and %)
-- Number of assets per portfolio
-
-#### 3.2 Asset Distribution View
-**Route:** `/portfolio/{portfolio}/assets`
+**Data Source:** positions (cached projection)
 
 **Components:**
-- `Components/AssetScoreTable.tsx` - Table with scores and weights
-- `Components/ScoreDistributionChart.tsx` - How scores distribute
+- Portfolio allocation pie chart
+- Target vs Current weight bars
+- Asset list with quantities and values
+- Last consolidation timestamp
 
-**Columns:**
-- Ticker/Custom Name
-- Current Price × Quantity = Value
-- Score (with breakdown)
-- Weight % within portfolio
-- Buy/Hold/Exclude status
+### 3.2 Asset Management
+**Route:** `/wallet/{wallet}/assets`
+
+**Features:**
+- View all positions
+- See transaction history per asset
+- Manual price update (for unlisted)
 
 ---
 
-## 📋 Phase 4: Recommendation Engine (PLANNED)
+## 📋 Phase 4: Recommendation Engine
 
-### Investment Calculator
-
-#### 4.1 Investment Input Form
+### 4.1 Investment Input
 **Route:** `/wallet/{wallet}/invest`
 
-**Component:**
-- `Pages/Invest/Create.tsx` - Investment amount input
+**Inputs:**
+- Available capital
+- Maximum single asset allocation (optional)
 
-**Fields:**
-- Amount to invest (currency input)
-- Optional: Maximum single asset allocation
+**Data Sources:**
+- positions (current state)
+- wallet_allocations (strategy)
+- current prices
 
-#### 4.2 Calculation Logic
-**Service Class:** `InvestmentRecommendationService`
+### 4.2 Calculation Logic
+1. Get current positions
+2. Get allocation strategy (scores, target weights)
+3. Calculate current weights
+4. Calculate drift from target
+5. Rank by priority (under-allocated first)
+6. Within portfolio, distribute by score
+7. Generate buy suggestions
 
-**Steps:**
-1. Calculate current portfolio values
-2. Determine target values (target_weight × total)
-3. Calculate drift (target - current)
-4. Sort portfolios by drift (biggest deficit first)
-5. For each portfolio:
-   - Calculate available allocation
-   - Filter assets with score > 0
-   - Calculate asset weights by score
-   - Determine quantity to buy
-   - Handle BR (integer) vs US (fractional)
-6. Generate ranked list
-
-#### 4.3 Recommendation Display
-**Component:**
-- `Components/RecommendationList.tsx` - Ranked suggestions
-- `Components/RecommendationCard.tsx` - Single suggestion details
-
-**Display Info:**
-- Asset ticker and name
-- Current price
-- Recommended quantity
-- Total cost
-- % of portfolio after purchase
-- Score breakdown
-
-#### 4.4 Logic Constraints
-- BR assets (B3): integer shares only
-- US assets (NASDAQ/NYSE): fractional allowed
-- Exclude assets with score ≤ 0
-- Respect target weights (don't over-allocate)
+### 4.3 Output
+- Ranked list of suggestions
+- Quantity to buy (integer BR, fractional US)
+- Estimated cost
+- New allocation %
 
 ---
 
-## 📋 Phase 5: Polish & Future Features (PLANNED)
+## 📋 Phase 5: Polish & Future Features
 
-### 5.1 UI/UX Improvements
-- [ ] Dark mode support
-- [ ] Mobile-responsive improvements
-- [ ] Loading states and skeletons
-- [ ] Error boundaries
+### 5.1 UI/UX
+- [ ] Dark mode
+- [ ] Mobile responsive
+- [ ] Loading states
 - [ ] Toast notifications
 
-### 5.2 Price Integration (Future)
-- [ ] GoogleFinance API integration
-- [ ] Automated price updates
+### 5.2 Price Integration
+- [ ] GoogleFinance API for listed assets
+- [ ] Manual price entry for unlisted
 - [ ] Price history tracking
-- [ ] Price alerts
 
-### 5.3 Transaction History (Future)
-- [ ] `transactions` table
-- [ ] Track buy/sell operations
-- [ ] Average price calculation (FIFO)
-- [ ] Profit/Loss tracking
-
-### 5.4 Reports & Analytics
-- [ ] Portfolio performance over time
-- [ ] Asset performance comparison
+### 5.3 Advanced Features
+- [ ] FIFO/LIFO toggle
+- [ ] Tax reporting (profit/loss)
 - [ ] Rebalancing history
-- [ ] Tax reporting helpers
-
-### 5.5 Multi-User Features (Future)
-- [ ] Shared portfolios
-- [ ] Read-only access
-- [ ] Portfolio templates
+- [ ] Portfolio sharing
 
 ---
 
 ## 🎯 Current Priority
 
-**Next Step:** Phase 2.2 - Frontend Implementation
+**Phase 2: Transactions-Based Architecture**
 
-**Focus:**
-1. Create Portfolio/Edit page with full asset management
-2. Update Wallet/Edit to add navigation to Portfolio Edit
-3. Create WalletAssetForm and WalletAssetList components
-4. Test listed vs unlisted asset creation
+**Start with:** Step 1 - Custom Assets
+
+1. Create custom_assets table
+2. Implement CRUD for custom assets
+3. Test unlisted asset creation
 
 ---
 
@@ -230,17 +220,31 @@ Migration `2026_02_07_195429_create_wallet_assets_table.php` already supports:
 |-------|--------|------------|
 | Phase 0: Foundation | ✅ Complete | 100% |
 | Phase 1: Portfolio | ✅ Complete | 100% |
-| Phase 2.1: Backend | ✅ Complete | 100% |
-| Phase 2.2: Frontend | 🚧 In Progress | 0% |
+| Phase 2: Transactions Arch | 🚧 Not Started | 0% |
 | Phase 3: Dashboard | 📋 Planned | 0% |
-| Phase 4: Recommendation Engine | 📋 Planned | 0% |
-| Phase 5: Polish & Future | 📋 Planned | 0% |
+| Phase 4: Recommendation | 📋 Planned | 0% |
+| Phase 5: Polish | 📋 Planned | 0% |
 
 ---
 
-## 📝 Notes
+## 📝 Architecture Notes
 
-- All prices are manually entered (Phase 1-5)
-- No transaction history (current quantity only)
-- GoogleFinance integration planned for future phase
-- Focus: Current state management + buy recommendations
+### Why Transactions-Based?
+- **Audit Trail:** Complete history of all operations
+- **Flexibility:** Can recalculate positions with different rules (FIFO/LIFO)
+- **Accuracy:** Source of truth vs calculated projections
+- **Future-Proof:** Easy to add features like cost basis, tax reporting
+
+### Key Differences from Old Approach
+- ❌ Old: Direct wallet_assets table
+- ✅ New: Transactions → Positions (projection)
+- ❌ Old: Score in wallet_assets
+- ✅ New: Score in wallet_allocations (strategy layer)
+- ❌ Old: Unlisted assets in same table
+- ✅ New: Separate custom_assets table
+
+### Consolidation Strategy
+- Positions recalculated on-demand or scheduled
+- is_dirty flag marks stale data
+- Fast dashboard reads from positions
+- Complex logic in allocation/recommendation layer

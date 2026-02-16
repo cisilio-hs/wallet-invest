@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wallet_assets', function (Blueprint $table) {
+        Schema::create('wallet_allocations', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('wallet_id')
@@ -23,17 +23,21 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->foreignId('asset_id')
-                ->constrained()
-                ->cascadeOnDelete()
-                ->nullable();
+                ->nullable()
+                ->constrained('assets')
+                ->cascadeOnDelete();
 
-            $table->string('custom_name')->nullable();
+            $table->foreignId('custom_asset_id')
+                ->nullable()
+                ->constrained('custom_assets')
+                ->cascadeOnDelete();
+
             $table->unsignedInteger('score')->default(0);
-            $table->decimal('quantity', 24, 10);
-            $table->decimal('average_price', 15, 6);
+
             $table->timestamps();
 
-            $table->unique(['wallet_id', 'asset_id', 'custom_name']);
+            // Unique constraint: one allocation per wallet/portfolio/asset combination
+            $table->unique(['wallet_id', 'portfolio_id', 'asset_id', 'custom_asset_id'], 'unique_allocation');
         });
     }
 
@@ -42,6 +46,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wallet_assets');
+        Schema::dropIfExists('wallet_allocations');
     }
 };

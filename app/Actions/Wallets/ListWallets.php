@@ -14,7 +14,6 @@ class ListWallets
     /**
      * Execute the action.
      *
-     * @param User $user
      * @return Collection<int, Wallet>
      */
     public function execute(User $user): Collection

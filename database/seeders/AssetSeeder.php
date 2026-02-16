@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Asset;
 use App\Models\AssetType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AssetSeeder extends Seeder
@@ -12,8 +11,8 @@ class AssetSeeder extends Seeder
     public function run(): void
     {
         $acao = AssetType::where('slug', 'acao')->first()->id;
-        $fii  = AssetType::where('slug', 'fii')->first()->id;
-        $etf  = AssetType::where('slug', 'etf')->first()->id;
+        $fii = AssetType::where('slug', 'fii')->first()->id;
+        $etf = AssetType::where('slug', 'etf')->first()->id;
         $cripto = AssetType::where('slug', 'cripto')->first()->id;
         $commodity = AssetType::where('slug', 'commodity')->first()->id;
 

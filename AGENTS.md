@@ -47,6 +47,18 @@ Person → Wallet → Portfolio → Assets
 - `crypto`: Bitcoin, Ethereum, etc.
 - `reit`: Real Estate Investment Trusts (US)
 
+### Asset Order Constraints
+
+**Listed Assets** (in global `assets` table) have order constraints:
+- `minimum_order_quantity`: Minimum quantity per order
+  - Example: 1.0 for B3 stocks (integer shares only)
+  - Example: 0.0001 for crypto (fractional allowed)
+- `minimum_order_value`: Minimum value per order
+  - Example: 1.0 USD for fractional US stocks
+  - Example: 5.00 BRL for some B3 stocks
+
+**Purpose:** Used by recommendation engine to suggest valid order amounts.
+
 ### Wallet Assets - Listed vs Unlisted
 
 **Listed Assets** (from global assets table):
@@ -64,6 +76,36 @@ Person → Wallet → Portfolio → Assets
 - Either `asset_id` OR `custom_name` must be present, never both
 - Same wallet cannot have duplicate entries
 - Both types support quantity and average_price tracking
+
+### Architecture Update (2026-02-13)
+
+**NEW: Transactions-Based Architecture**
+
+The system is transitioning to a ledger-based architecture for better auditability and flexibility:
+
+```
+transactions (source of truth)
+        ↓
+positions (projection/cache)
+        ↓
+dashboard / recommendation
+
+wallet_allocations (strategy layer)
+```
+
+**Key Changes:**
+- **Transactions**: Immutable ledger of all buy/sell operations
+- **Positions**: Auto-calculated cache for fast dashboard reads
+- **Custom Assets**: Separate table for unlisted assets (Gold, CDBs, etc.)
+- **Wallet Allocations**: Strategy layer defining scores and portfolio assignments
+
+**Benefits:**
+- Complete audit trail
+- Can recalculate positions with different rules (FIFO/LIFO)
+- Better separation of concerns
+- Foundation for tax reporting and advanced analytics
+
+See: `opencode/tasks/2026_02_13_TRANSACTIONS_BASED_ARCHITECTURE.md`
 
 ### Current Scope
 - ✅ TypeScript migration completed

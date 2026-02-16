@@ -11,9 +11,6 @@ class DeleteWallet
 {
     /**
      * Execute the action.
-     *
-     * @param Wallet $wallet
-     * @return bool
      */
     public function execute(Wallet $wallet): bool
     {

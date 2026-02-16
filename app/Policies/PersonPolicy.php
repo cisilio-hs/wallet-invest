@@ -2,11 +2,10 @@
 
 namespace App\Policies;
 
+use App\Models\Person;
 use App\Models\User;
-use App\Models\WalletAsset;
-use Illuminate\Auth\Access\Response;
 
-class WalletAssetPolicy
+class PersonPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +18,7 @@ class WalletAssetPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, WalletAsset $walletAsset): bool
+    public function view(User $user, Person $person): bool
     {
         return false;
     }
@@ -29,29 +28,29 @@ class WalletAssetPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, WalletAsset $walletAsset): bool
+    public function update(User $user, Person $person): bool
     {
-        return $walletAsset->wallet->person_id === $user->person->id;
+        return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, WalletAsset $walletAsset): bool
+    public function delete(User $user, Person $person): bool
     {
-        return $walletAsset->wallet->person_id === $user->person->id;
+        return false;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, WalletAsset $walletAsset): bool
+    public function restore(User $user, Person $person): bool
     {
         return false;
     }
@@ -59,7 +58,7 @@ class WalletAssetPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, WalletAsset $walletAsset): bool
+    public function forceDelete(User $user, Person $person): bool
     {
         return false;
     }

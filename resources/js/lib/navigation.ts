@@ -11,6 +11,7 @@ import {
     BriefcaseIcon,
     PlusCircleIcon,
 } from '@heroicons/react/24/outline';
+// import { CircleIcon } from '@sidekickicons/react/24/outline';
 
 export interface MenuItem {
     label: string;
@@ -53,13 +54,13 @@ export const navigation: MenuSection[] = [
                         label: 'All Wallets',
                         href: route('wallets.index'),
                         routeName: 'wallets.index',
-                        icon: PlusCircleIcon,
+                        // icon: CircleIcon,
                     },
                     {
                         label: 'Create New',
                         href: route('wallets.create'),
                         routeName: 'wallets.create',
-                        icon: PlusCircleIcon,
+                        // icon: CircleIcon,
                     },
                 ],
             },

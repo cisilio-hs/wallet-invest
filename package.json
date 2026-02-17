@@ -34,6 +34,7 @@
     },
     "dependencies": {
         "@heroicons/react": "^2.2.0",
+        "@sidekickicons/react": "^0.15.0",
         "@tailwindcss/line-clamp": "^0.4.4"
     }
 }

@@ -9,6 +9,7 @@ import { EyeIcon, FolderIcon, PencilSquareIcon, TrashIcon, WalletIcon } from '@h
 import { useForm, router } from '@inertiajs/react';
 import { useState, FormEvent } from 'react';
 import { Portfolio, User, Wallet } from '@/types';
+import { FloppyDiskIcon } from '@sidekickicons/react/24/outline';
 
 interface EditProps {
     auth: {
@@ -88,7 +89,8 @@ export default function Edit({ auth, wallet }: EditProps) {
                             title="Editar Carteira"
                             footer={
                                 <div className="flex justify gap-4">
-                                    <PrimaryButton onClick={submitWallet} className="px-4 py-2">
+                                    <PrimaryButton onClick={submitWallet} className="px-4 py-2 gap-2">
+                                        <FloppyDiskIcon className="h-4 w-4"/>
                                         Save
                                     </PrimaryButton>
                                 </div>

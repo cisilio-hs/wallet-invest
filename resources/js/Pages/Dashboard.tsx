@@ -4,17 +4,18 @@ import { Head } from '@inertiajs/react';
 
 export default function Dashboard() {
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard
-                </h2>
-            }
-        >
+        <AuthenticatedLayout title="Dashboard">
             <Head title="Dashboard" />
 
             <Card className='py-12'>
-                You're logged in! mequetrefe
+                <div className="text-center">
+                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">
+                        Welcome to Wallet Invest!
+                    </h3>
+                    <p className="text-[var(--text-secondary)]">
+                        You're logged in and ready to manage your investments.
+                    </p>
+                </div>
             </Card>
         </AuthenticatedLayout>
     );

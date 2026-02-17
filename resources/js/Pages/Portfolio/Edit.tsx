@@ -51,13 +51,7 @@ export default function Edit({ auth, portfolio }: EditProps) {
     }
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Configure Portfolio - {portfolio.name}
-                </h2>
-            }
-        >
+        <AuthenticatedLayout title={`Configure Portfolio - ${portfolio.name}`}>
             <div className="p-6 space-y-6">
 
                 <div className="flex space-x-6 justify">

@@ -10,7 +10,7 @@ export default function WalletSelector() {
     return (
         <Dropdown>
             <Dropdown.Trigger>
-                <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 gap-3">
+                <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] gap-3">
                     <WalletIcon className="h-5 w-5" />
 
                     {currentWallet ? currentWallet.name : "Selecionar Carteira"}
@@ -28,15 +28,15 @@ export default function WalletSelector() {
                     Nova Carteira
                 </Dropdown.Link>
 
-                <div className="border-t border-gray-200 my-2"></div>
+                <div className="border-t border-[var(--border-color)] my-2"></div>
 
                 {wallets?.map((wallet) => (
                     <div
                         key={wallet.id}
-                        className="flex items-center justify-between px-4 py-2 hover:bg-gray-100"
+                        className="flex items-center justify-between px-4 py-2 hover:bg-[var(--sidebar-hover)]"
                     >
                         <button
-                            className="flex-1 text-left"
+                            className="flex-1 text-left text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                             onClick={() => selectWallet(wallet.id)}
                         >
                             {wallet.name}
@@ -44,7 +44,7 @@ export default function WalletSelector() {
 
                         <NavLink
                             href={route("wallets.edit", wallet.id)}
-                            className="text-gray-500 hover:text-gray-700"
+                            className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                         >
                             <Cog6ToothIcon className="h-4 w-4" />
                         </NavLink>

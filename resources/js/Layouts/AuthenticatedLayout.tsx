@@ -1,206 +1,117 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { WalletProvider } from "@/Contexts/WalletContext";
-import WalletSelector from "@/Components/WalletSelector";
-import { Link, usePage } from '@inertiajs/react';
-import { useState, ReactNode } from 'react';
-import { User } from '@/types';
+import React, { ReactNode } from 'react';
+import { Head } from '@inertiajs/react';
+import { ThemeProvider } from '@/Contexts/ThemeContext';
+import { WalletProvider } from '@/Contexts/WalletContext';
+import { SidebarProvider, useSidebar, Sidebar, SidebarItem, SidebarSubmenu, SidebarSection } from '@/Components/Sidebar';
+import { Topbar, UserMenu, ThemeToggle, TopbarIconWithBadge } from '@/Components/Topbar';
+import WalletSelector from '@/Components/WalletSelector';
+import { navigation } from '@/lib/navigation';
+import { BellIcon, Bars3Icon } from '@heroicons/react/24/outline';
 
 interface AuthenticatedLayoutProps {
-    header?: ReactNode;
     children: ReactNode;
+    title?: string;
 }
 
-interface AuthPageProps {
-    auth: {
-        user: User;
-    };
-}
-
-export default function AuthenticatedLayout({ header, children }: AuthenticatedLayoutProps) {
-    const pageProps = usePage().props as unknown as AuthPageProps;
-    const user = pageProps.auth.user;
-
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+// Componente interno que usa o contexto do sidebar
+function LayoutContent({ children, title }: AuthenticatedLayoutProps) {
+    const { collapsed, toggleSidebar } = useSidebar();
 
     return (
-        <WalletProvider>
-            <div className="min-h-screen bg-gray-100">
-                <nav className="border-b border-gray-100 bg-white">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="flex h-16 justify-between">
-                            <div className="flex">
-                                <div className="flex shrink-0 items-center">
-                                    <Link href="/">
-                                        <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                    </Link>
-                                </div>
+        <div className="min-h-screen flex">
+            <Head title={title} />
+            
+            {/* Sidebar */}
+            <Sidebar>
+                {navigation.map((section, sectionIndex) => (
+                    <SidebarSection key={sectionIndex} header={section.header}>
+                        {section.items.map((item, itemIndex) => (
+                            item.children ? (
+                                <SidebarSubmenu
+                                    key={itemIndex}
+                                    label={item.label}
+                                    href={item.href}
+                                    routeName={item.routeName}
+                                    icon={item.icon}
+                                    items={item.children}
+                                />
+                            ) : (
+                                <SidebarItem
+                                    key={itemIndex}
+                                    label={item.label}
+                                    href={item.href}
+                                    icon={item.icon}
+                                    badge={item.badge}
+                                    active={item.routeName ? route().current(item.routeName) : false}
+                                />
+                            )
+                        ))}
+                    </SidebarSection>
+                ))}
+            </Sidebar>
 
-                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                    <NavLink
-                                        href={route('dashboard')}
-                                        active={(route as unknown as () => { current: (name: string) => boolean })().current('dashboard')}
-                                    >
-                                        Dashboard
-                                    </NavLink>
-                                </div>
+            {/* Main Content - margin-left dinâmico baseado no estado do sidebar */}
+            <div 
+                className={`
+                    flex-1 flex flex-col min-h-screen transition-all duration-300
+                    ${collapsed ? 'ml-16' : 'ml-64'}
+                `}
+            >
+                {/* Topbar */}
+                <Topbar>
+                    <div className="flex items-center gap-4">
+                        {/* Botão de Toggle do Sidebar */}
+                        <button
+                            onClick={toggleSidebar}
+                            className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--sidebar-hover)] rounded-lg transition-colors duration-200"
+                            aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+                        >
+                            <Bars3Icon className="h-6 w-6" />
+                        </button>
 
-                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex sm:items-center">
-                                    <WalletSelector />
-                                </div>
-
-                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                    <NavLink
-                                        href={route('wallets.index')}
-                                        active={(route as unknown as () => { current: (name: string) => boolean })().current('wallets.*')}
-                                    >
-                                        Wallets
-                                    </NavLink>
-                                </div>
-                            </div>
-
-                            <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                                <div className="relative ms-3">
-                                    <Dropdown>
-                                        <Dropdown.Trigger>
-                                            <span className="inline-flex rounded-md">
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                                >
-                                                    {user.name}
-
-                                                    <svg
-                                                        className="-me-0.5 ms-2 h-4 w-4"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        </Dropdown.Trigger>
-
-                                        <Dropdown.Content>
-                                            <Dropdown.Link
-                                                href={route('profile.edit')}
-                                            >
-                                                Profile
-                                            </Dropdown.Link>
-                                            <Dropdown.Link
-                                                href={route('logout')}
-                                                method="post"
-                                                as="button"
-                                            >
-                                                Log Out
-                                            </Dropdown.Link>
-                                        </Dropdown.Content>
-                                    </Dropdown>
-                                </div>
-                            </div>
-
-                            <div className="-me-2 flex items-center sm:hidden">
-                                <button
-                                    onClick={() =>
-                                        setShowingNavigationDropdown(
-                                            (previousState) => !previousState,
-                                        )
-                                    }
-                                    className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                                >
-                                    <svg
-                                        className="h-6 w-6"
-                                        stroke="currentColor"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            className={
-                                                !showingNavigationDropdown
-                                                    ? 'inline-flex'
-                                                    : 'hidden'
-                                            }
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M4 6h16M4 12h16M4 18h16"
-                                        />
-                                        <path
-                                            className={
-                                                showingNavigationDropdown
-                                                    ? 'inline-flex'
-                                                    : 'hidden'
-                                            }
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M6 18L18 6M6 6l12 12"
-                                        />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
+                        {/* Page Title */}
+                        <h1 className="text-xl font-semibold text-[var(--text-primary)]">
+                            {title}
+                        </h1>
                     </div>
 
-                    <div
-                        className={
-                            (showingNavigationDropdown ? 'block' : 'hidden') +
-                            ' sm:hidden'
-                        }
-                    >
-                        <div className="space-y-1 pb-3 pt-2">
-                            <ResponsiveNavLink
-                                href={route('dashboard')}
-                                active={(route as unknown as () => { current: (name: string) => boolean })().current('dashboard')}
-                            >
-                                Dashboard
-                            </ResponsiveNavLink>
-                        </div>
+                    <div className="flex items-center gap-2">
+                        {/* Wallet Selector */}
+                        <WalletSelector />
 
-                        <div className="border-t border-gray-200 pb-1 pt-4">
-                            <div className="px-4">
-                                <div className="text-base font-medium text-gray-800">
-                                    {user.name}
-                                </div>
-                                <div className="text-sm font-medium text-gray-500">
-                                    {user.email}
-                                </div>
-                            </div>
-
-                            <div className="mt-3 space-y-1">
-                                <ResponsiveNavLink href={route('profile.edit')}>
-                                    Profile
-                                </ResponsiveNavLink>
-                                <ResponsiveNavLink
-                                    method="post"
-                                    href={route('logout')}
-                                    as="button"
-                                >
-                                    Log Out
-                                </ResponsiveNavLink>
-                            </div>
-                        </div>
+                        {/* Theme Toggle */}
+                        <ThemeToggle />
+                        
+                        {/* Notifications */}
+                        <TopbarIconWithBadge
+                            icon={BellIcon}
+                            count={0}
+                        />
+                        
+                        {/* User Menu */}
+                        <UserMenu />
                     </div>
-                </nav>
+                </Topbar>
 
-                {header && (
-                    <header className="bg-white shadow">
-                        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                            {header}
-                        </div>
-                    </header>
-                )}
-
-                <main>{children}</main>
+                {/* Page Content */}
+                <main className="flex-1 p-6 bg-[var(--content-bg)] overflow-auto">
+                    {children}
+                </main>
             </div>
-        </WalletProvider>
+        </div>
+    );
+}
+
+export default function AuthenticatedLayout({ children, title }: AuthenticatedLayoutProps) {
+    return (
+        <ThemeProvider>
+            <WalletProvider>
+                <SidebarProvider>
+                    <LayoutContent title={title}>
+                        {children}
+                    </LayoutContent>
+                </SidebarProvider>
+            </WalletProvider>
+        </ThemeProvider>
     );
 }

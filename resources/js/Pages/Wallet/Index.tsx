@@ -35,13 +35,7 @@ export default function Index({ auth, wallets }: IndexProps) {
     }
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    My Wallets
-                </h2>
-            }
-        >
+        <AuthenticatedLayout title="My Wallets">
             <div className="p-6 space-y-6">
 
                 <Card

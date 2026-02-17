@@ -23,17 +23,17 @@ export default function DataTable<T>({
 }: DataTableProps<T>) {
 
     return (
-        <div className={`bg-white shadow rounded-lg border border-gray-200 ${className}`}>
+        <div className={`bg-[var(--card-bg)] shadow rounded-lg border border-[var(--border-color)] ${className}`}>
             <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-[var(--border-color)]">
+                    <thead className="bg-[var(--sidebar-hover)]">
                         <tr>
                             {columns.map((col, index) => (
                                 <th
                                     key={index}
                                     className={`
                                         px-3 py-1.5
-                                        text-left text-sm font-semibold text-gray-700
+                                        text-left text-sm font-semibold text-[var(--text-primary)]
                                         ${col.grow ? "w-full" : "whitespace-nowrap"}
                                         ${col.className || ""}
                                     `}
@@ -46,7 +46,7 @@ export default function DataTable<T>({
                                 <th
                                     className="
                                         px-3 py-1.5
-                                        text-right text-sm font-semibold text-gray-700
+                                        text-right text-sm font-semibold text-[var(--text-primary)]
                                     "
                                 >
 
@@ -55,18 +55,18 @@ export default function DataTable<T>({
                         </tr>
                     </thead>
 
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-[var(--border-color)]">
                         {data.map((item, rowIndex) => (
                             <tr
                                 key={rowIndex}
-                                className="hover:bg-gray-50 transition-colors"
+                                className="hover:bg-[var(--sidebar-hover)] transition-colors"
                             >
                                 {columns.map((col, colIndex) => (
                                     <td
                                         key={colIndex}
                                         className={`
                                             px-3 py-1.5
-                                            text-sm text-gray-700
+                                            text-sm text-[var(--text-primary)]
                                             ${col.grow ? "w-full" : "whitespace-nowrap"}
                                             ${col.className || ""}
                                         `}

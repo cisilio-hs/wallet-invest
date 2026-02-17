@@ -5,7 +5,7 @@ import FormInputText from '@/Components/FormInputText';
 import Modal from '@/Components/Modal';
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { EyeIcon, IdentificationIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, FolderIcon, PencilSquareIcon, TrashIcon, WalletIcon } from '@heroicons/react/24/outline';
 import { useForm, router } from '@inertiajs/react';
 import { useState, FormEvent } from 'react';
 import { Portfolio, User, Wallet } from '@/types';
@@ -79,13 +79,7 @@ export default function Edit({ auth, wallet }: EditProps) {
     }
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Configure Wallet - {wallet.name}
-                </h2>
-            }
-        >
+        <AuthenticatedLayout title={`Configure Wallet: ${wallet.name}`}>
             <div className="p-6 space-y-6">
 
                 <div className="flex space-x-6 justify">
@@ -106,6 +100,7 @@ export default function Edit({ auth, wallet }: EditProps) {
                                     variant="top"
                                     placeholder="My Agressive Wallet"
                                     value={walletForm.data.name}
+                                    icon={WalletIcon}
                                     onChange={e => walletForm.setData('name', e.target.value)}
                                     error={walletForm.errors.name}
                                 />
@@ -129,7 +124,7 @@ export default function Edit({ auth, wallet }: EditProps) {
                                     variant="top"
                                     placeholder="Stocks"
                                     value={createForm.data.name}
-                                    icon={IdentificationIcon}
+                                    icon={FolderIcon}
                                     onChange={e => createForm.setData('name', e.target.value)}
                                     error={createForm.errors.name}
                                 />

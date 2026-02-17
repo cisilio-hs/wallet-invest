@@ -27,18 +27,18 @@ export default function FormInputBase({
         normal: "",
         top: "relative mt-2",
         inside:
-            "relative border rounded-md shadow-sm focus-within:ring focus-within:ring-indigo-200",
+            "relative border border-[var(--border-color)] rounded-md shadow-sm focus-within:ring focus-within:ring-[var(--accent-color)]",
     }[variant];
 
     const labelClasses = {
-        normal: hasError ? "text-red-500" : "text-gray-600",
+        normal: hasError ? "text-red-500" : "text-[var(--text-secondary)]",
 
         top: `
-            absolute -top-2 left-3 px-2 text-xs bg-white z-10
-            ${hasError ? "text-red-500" : "text-gray-600"}
+            absolute -top-2 left-3 px-2 text-xs bg-[var(--card-bg)] z-10
+            ${hasError ? "text-red-500" : "text-[var(--text-secondary)]"}
         `,
 
-        inside: "absolute top-1 left-3 text-xs text-gray-500",
+        inside: "absolute top-1 left-3 text-xs text-[var(--text-muted)]",
     }[variant];
 
     const iconWrapperClasses = {

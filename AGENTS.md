@@ -105,7 +105,7 @@ wallet_allocations (strategy layer)
 - Better separation of concerns
 - Foundation for tax reporting and advanced analytics
 
-See: `opencode/tasks/2026_02_13_TRANSACTIONS_BASED_ARCHITECTURE.md`
+See: `.opencode/tasks/2026_02_13_TRANSACTIONS_BASED_ARCHITECTURE.md`
 
 ### Current Scope
 - ✅ TypeScript migration completed
@@ -430,7 +430,7 @@ indent_size = 2
 When creating task summary files (e.g., after completing a migration or major feature), save them to:
 
 ```
-./opencode/tasks/YYYY_MM_DD_HHMMSS_DESCRIPTIVE_NAME.md
+./.opencode/tasks/YYYY_MM_DD_HHMMSS_DESCRIPTIVE_NAME.md
 ```
 
 **Format (similar to Laravel migrations):**

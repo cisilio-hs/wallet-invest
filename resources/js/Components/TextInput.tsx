@@ -37,7 +37,7 @@ const TextInput = forwardRef<TextInputHandle, TextInputProps>(
             <input
                 {...props}
                 type={type}
-                className={`rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${className}`}
+                className={`rounded-md border-[var(--border-color)] bg-[var(--card-bg)] text-[var(--text-primary)] shadow-sm focus:border-[var(--accent-color)] focus:ring-[var(--accent-color)] ${className}`}
                 ref={localRef}
             />
         );

@@ -1,11 +1,13 @@
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import useWallet from "@/Hooks/useWallet";
+import { useI18n } from "@/i18n";
 
 import { PlusIcon, Cog6ToothIcon, ChevronUpIcon, WalletIcon } from "@heroicons/react/24/outline";
 
 export default function WalletSelector() {
     const { wallets, currentWallet, selectWallet } = useWallet();
+    const { t } = useI18n();
 
     return (
         <Dropdown>
@@ -13,7 +15,7 @@ export default function WalletSelector() {
                 <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] gap-3">
                     <WalletIcon className="h-5 w-5" />
 
-                    {currentWallet ? currentWallet.name : "Selecionar Carteira"}
+                    {currentWallet ? currentWallet.name : t('wallets.selector.select_wallet')}
 
                     <ChevronUpIcon className="h-5 w-5" />
                 </button>
@@ -25,7 +27,7 @@ export default function WalletSelector() {
                     className="flex items-center gap-2"
                 >
                     <PlusIcon className="h-4 w-4" />
-                    Nova Carteira
+                    {t('wallets.selector.new_wallet')}
                 </Dropdown.Link>
 
                 <div className="border-t border-[var(--border-color)] my-2"></div>

@@ -10,6 +10,7 @@ import { useForm, router } from '@inertiajs/react';
 import { useState, FormEvent } from 'react';
 import { Portfolio, User, Wallet } from '@/types';
 import { FloppyDiskIcon } from '@sidekickicons/react/24/outline';
+import { useI18n } from '@/i18n';
 
 interface EditProps {
     auth: {
@@ -19,6 +20,7 @@ interface EditProps {
 }
 
 export default function Edit({ auth, wallet }: EditProps) {
+    const { t } = useI18n();
 
     // Form da Wallet
     const walletForm = useForm({
@@ -74,33 +76,35 @@ export default function Edit({ auth, wallet }: EditProps) {
     }
 
     function deletePortfolio(id: number) {
-        if (confirm('Deseja realmente excluir este portfolio?')) {
+        if (confirm(t('wallets.edit.delete_confirm'))) {
             router.delete(route('portfolios.destroy', id));
         }
     }
 
+    const totalWeight = wallet.portfolios?.reduce((acc, p) => acc + p.target_weight, 0) || 0;
+
     return (
-        <AuthenticatedLayout title={`Configure Wallet: ${wallet.name}`}>
+        <AuthenticatedLayout title={t('wallets.edit.title', { name: wallet.name })}>
             <div className="p-6 space-y-6">
 
                 <div className="flex space-x-6 justify">
                     <div className="grow h-full">
                         <Card
-                            title="Editar Carteira"
+                            title={t('wallets.edit.edit_wallet')}
                             footer={
                                 <div className="flex justify gap-4">
                                     <PrimaryButton onClick={submitWallet} className="px-4 py-2 gap-2">
                                         <FloppyDiskIcon className="h-4 w-4"/>
-                                        Save
+                                        {t('wallets.edit.save_button')}
                                     </PrimaryButton>
                                 </div>
                             }
                         >
                             <div>
                                 <FormInputText
-                                    label="Name"
+                                    label={t('common.name')}
                                     variant="top"
-                                    placeholder="My Agressive Wallet"
+                                    placeholder={t('wallets.index.name_placeholder')}
                                     value={walletForm.data.name}
                                     icon={WalletIcon}
                                     onChange={e => walletForm.setData('name', e.target.value)}
@@ -111,20 +115,20 @@ export default function Edit({ auth, wallet }: EditProps) {
                     </div>
                     <div className="grow">
                         <Card
-                            title="Adicionar Portfolio"
+                            title={t('wallets.edit.add_portfolio')}
                             footer={
                                 <div className="flex justify gap-4">
                                     <PrimaryButton onClick={(createPortfolio)} className="px-4 py-2">
-                                        Save
+                                        {t('common.save')}
                                     </PrimaryButton>
                                 </div>
                             }
                         >
                             <div className="flex flex-col justify gap-4">
                                 <FormInputText
-                                    label="Name"
+                                    label={t('common.name')}
                                     variant="top"
-                                    placeholder="Stocks"
+                                    placeholder={t('wallets.edit.portfolio_name_placeholder')}
                                     value={createForm.data.name}
                                     icon={FolderIcon}
                                     onChange={e => createForm.setData('name', e.target.value)}
@@ -132,9 +136,9 @@ export default function Edit({ auth, wallet }: EditProps) {
                                 />
 
                                 <FormInputPercentage
-                                    label="Target Weight"
+                                    label={t('wallets.edit.target_weight_label')}
                                     variant="top"
-                                    placeholder="25.00"
+                                    placeholder={t('wallets.edit.target_weight_placeholder')}
                                     value={createForm.data.target_weight}
                                     onChange={e => createForm.setData("target_weight", Number(e.target.value))}
                                     error={createForm.errors.target_weight}
@@ -143,25 +147,25 @@ export default function Edit({ auth, wallet }: EditProps) {
                         </Card>
                     </div>
                 </div>
-                <Card 
+                <Card
                     title={
                         <div className='flex justify-between'>
-                            <span> Portfolios </span>
-                            <span> Total: { wallet.portfolios?.reduce((acc, p)=> acc + p.target_weight, 0) }% </span>
+                            <span>{t('wallets.edit.portfolios_title')}</span>
+                            <span>{t('wallets.edit.total_weight', { total: totalWeight })}</span>
                         </div>
                         }>
                     <DataTable<Portfolio>
                         data={wallet.portfolios || []}
                         columns={[
-                            { key: "name", label: "Name", grow: true },
+                            { key: "name", label: t('wallets.edit.column_name'), grow: true },
                             {
                                 key: "wallet_assets",
-                                label: "Assets",
+                                label: t('wallets.edit.column_assets'),
                                 render: (item) => `${item.walletAllocations?.length || 0}`
                             },
-                            { 
-                                key: "target_weight", 
-                                label: "Target %",
+                            {
+                                key: "target_weight",
+                                label: t('wallets.edit.column_target'),
                                 render: (item) => `${item.target_weight}%`
                             }
                         ]}
@@ -170,7 +174,7 @@ export default function Edit({ auth, wallet }: EditProps) {
                                 <PrimaryButton
                                     onClick={() => router.get(route('portfolios.edit', item.id))}
                                     className="p-1 bg-blue-600"
-                                    title="View Portfolio"
+                                    title={t('wallets.edit.view_portfolio')}
                                 >
                                     <EyeIcon className="h-4 w-4"/>
                                 </PrimaryButton>
@@ -197,28 +201,28 @@ export default function Edit({ auth, wallet }: EditProps) {
 
             <Modal show={!!editingPortfolio} onClose={closeModal}>
                 <Card
-                    title="Edit Portfolio"
+                    title={t('wallets.edit.modal_title')}
                     footer={
                         <div className="flex flex-row-reverse justify">
                             <PrimaryButton
                                 onClick={updatePortfolio}
                                 className="px-4 py-2"
                             >
-                                Salvar
+                                {t('wallets.edit.modal_save')}
                             </PrimaryButton>
                             <div className='grow' />
                             <PrimaryButton
                                 onClick={closeModal}
                                 className="px-4 py-2 bg-red-600"
                             >
-                                Cancelar
+                                {t('wallets.edit.modal_cancel')}
                             </PrimaryButton>
                         </div>
                     }
                 >
                     <div className="flex flex-col justify space-y-6">
                         <FormInputText
-                            label="Name"
+                            label={t('wallets.edit.modal_name_label')}
                             variant="top"
                             value={editForm.data.name}
                             onChange={e =>
@@ -228,7 +232,7 @@ export default function Edit({ auth, wallet }: EditProps) {
                         />
 
                         <FormInputPercentage
-                            label="Target Weight"
+                            label={t('wallets.edit.modal_target_weight_label')}
                             variant="top"
                             value={editForm.data.target_weight}
                             onChange={e => editForm.setData("target_weight", Number(e.target.value))}

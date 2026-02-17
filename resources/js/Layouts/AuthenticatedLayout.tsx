@@ -5,7 +5,8 @@ import { WalletProvider } from '@/Contexts/WalletContext';
 import { SidebarProvider, useSidebar, Sidebar, SidebarItem, SidebarSubmenu, SidebarSection } from '@/Components/Sidebar';
 import { Topbar, UserMenu, ThemeToggle, TopbarIconWithBadge } from '@/Components/Topbar';
 import WalletSelector from '@/Components/WalletSelector';
-import { navigation } from '@/lib/navigation';
+import { getNavigation } from '@/lib/navigation';
+import { useI18n } from '@/i18n';
 import { BellIcon, Bars3Icon } from '@heroicons/react/24/outline';
 
 interface AuthenticatedLayoutProps {
@@ -16,11 +17,13 @@ interface AuthenticatedLayoutProps {
 // Componente interno que usa o contexto do sidebar
 function LayoutContent({ children, title }: AuthenticatedLayoutProps) {
     const { collapsed, toggleSidebar } = useSidebar();
+    const { t } = useI18n();
+    const navigation = getNavigation((key) => t(`navigation.${key}`));
 
     return (
         <div className="min-h-screen flex">
             <Head title={title} />
-            
+
             {/* Sidebar */}
             <Sidebar>
                 {navigation.map((section, sectionIndex) => (
@@ -64,7 +67,7 @@ function LayoutContent({ children, title }: AuthenticatedLayoutProps) {
                         <button
                             onClick={toggleSidebar}
                             className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--sidebar-hover)] rounded-lg transition-colors duration-200"
-                            aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+                            aria-label={collapsed ? t('components.layout.expand_menu') : t('components.layout.collapse_menu')}
                         >
                             <Bars3Icon className="h-6 w-6" />
                         </button>

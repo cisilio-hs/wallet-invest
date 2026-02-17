@@ -6,6 +6,7 @@ import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { UpdateProfileFormData, User } from '@/types';
+import { useI18n } from '@/i18n';
 
 interface PersonData {
     phone: string | null;
@@ -32,6 +33,7 @@ export default function UpdateProfileInformation({
     person,
     className = '',
 }: UpdateProfileInformationProps) {
+    const { t } = useI18n();
     const user = usePage<PageProps>().props.auth.user;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
@@ -52,17 +54,17 @@ export default function UpdateProfileInformation({
         <section className={className}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900">
-                    Profile Information
+                    {t('profile.update_info.title')}
                 </h2>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    Update your account's profile information and email address.
+                    {t('profile.update_info.description')}
                 </p>
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <InputLabel htmlFor="name" value={t('profile.update_info.name')} />
 
                     <TextInput
                         id="name"
@@ -78,7 +80,7 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="email" value={t('profile.update_info.email')} />
 
                     <TextInput
                         id="email"
@@ -94,7 +96,7 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="phone" value="Phone" />
+                    <InputLabel htmlFor="phone" value={t('profile.update_info.phone')} />
 
                     <TextInput
                         id="phone"
@@ -109,7 +111,7 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="birthday" value="Birthday" />
+                    <InputLabel htmlFor="birthday" value={t('profile.update_info.birthday')} />
 
                     <TextInput
                         id="birthday"
@@ -126,28 +128,29 @@ export default function UpdateProfileInformation({
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
                         <p className="mt-2 text-sm text-gray-800">
-                            Your email address is unverified.
+                            {t('profile.update_info.unverified')}
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
                                 className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
-                                Click here to re-send the verification email.
+                                {t('profile.update_info.resend_link')}
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
                             <div className="mt-2 text-sm font-medium text-green-600">
-                                A new verification link has been sent to your
-                                email address.
+                                {t('profile.update_info.link_sent')}
                             </div>
                         )}
                     </div>
                 )}
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    <PrimaryButton disabled={processing}>
+                        {t('profile.update_info.save_button')}
+                    </PrimaryButton>
 
                     <Transition
                         show={recentlySuccessful}
@@ -157,7 +160,7 @@ export default function UpdateProfileInformation({
                         leaveTo="opacity-0"
                     >
                         <p className="text-sm text-gray-600">
-                            Saved.
+                            {t('profile.update_info.saved_message')}
                         </p>
                     </Transition>
                 </div>

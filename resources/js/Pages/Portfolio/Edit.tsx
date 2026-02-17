@@ -8,6 +8,7 @@ import { IdentificationIcon, PencilSquareIcon, TrashIcon } from '@heroicons/reac
 import { useForm, router } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { Portfolio, User, WalletAllocation } from '@/types';
+import { useI18n } from '@/i18n';
 
 interface EditProps {
     auth: {
@@ -17,6 +18,7 @@ interface EditProps {
 }
 
 export default function Edit({ auth, portfolio }: EditProps) {
+    const { t } = useI18n();
 
     // Form para editar portfolio
     const portfolioForm = useForm({
@@ -44,33 +46,33 @@ export default function Edit({ auth, portfolio }: EditProps) {
     }
 
     function deleteAllocation(id: number) {
-        if (confirm('Deseja realmente excluir esta alocação?')) {
+        if (confirm(t('portfolios.edit.delete_confirm'))) {
             // TODO: Implement allocation deletion
             console.log('Delete allocation:', id);
         }
     }
 
     return (
-        <AuthenticatedLayout title={`Configure Portfolio - ${portfolio.name}`}>
+        <AuthenticatedLayout title={t('portfolios.edit.title', { name: portfolio.name })}>
             <div className="p-6 space-y-6">
 
                 <div className="flex space-x-6 justify">
                     <div className="grow h-full">
                         <Card
-                            title="Editar Portfolio"
+                            title={t('portfolios.edit.edit_portfolio')}
                             footer={
                                 <div className="flex justify gap-4">
                                     <PrimaryButton onClick={submitPortfolio} className="px-4 py-2">
-                                        Save
+                                        {t('common.save')}
                                     </PrimaryButton>
                                 </div>
                             }
                         >
                             <div className="flex flex-col justify gap-4">
                                 <FormInputText
-                                    label="Name"
+                                    label={t('common.name')}
                                     variant="top"
-                                    placeholder="Stocks"
+                                    placeholder={t('wallets.edit.portfolio_name_placeholder')}
                                     value={portfolioForm.data.name}
                                     icon={IdentificationIcon}
                                     onChange={e => portfolioForm.setData('name', e.target.value)}
@@ -78,9 +80,9 @@ export default function Edit({ auth, portfolio }: EditProps) {
                                 />
 
                                 <FormInputPercentage
-                                    label="Target Weight"
+                                    label={t('wallets.edit.target_weight_label')}
                                     variant="top"
-                                    placeholder="25.00"
+                                    placeholder={t('wallets.edit.target_weight_placeholder')}
                                     value={portfolioForm.data.target_weight}
                                     onChange={e => portfolioForm.setData("target_weight", Number(e.target.value))}
                                     error={portfolioForm.errors.target_weight}
@@ -90,38 +92,38 @@ export default function Edit({ auth, portfolio }: EditProps) {
                     </div>
                     <div className="grow">
                         <Card
-                            title="Adicionar Alocação"
+                            title={t('portfolios.edit.add_allocation')}
                             footer={
                                 <div className="flex justify gap-4">
                                     <PrimaryButton onClick={createAllocation} className="px-4 py-2">
-                                        Save
+                                        {t('common.save')}
                                     </PrimaryButton>
                                 </div>
                             }
                         >
                             <div className="flex flex-col justify gap-4">
                                 <FormInputText
-                                    label="Asset ID (Listed)"
+                                    label={t('portfolios.edit.asset_id_label')}
                                     variant="top"
-                                    placeholder="123"
+                                    placeholder={t('portfolios.edit.asset_id_placeholder')}
                                     value={allocationForm.data.asset_id}
                                     onChange={e => allocationForm.setData('asset_id', e.target.value)}
                                     error={allocationForm.errors.asset_id}
                                 />
 
                                 <FormInputText
-                                    label="Custom Asset ID (Unlisted)"
+                                    label={t('portfolios.edit.custom_asset_id_label')}
                                     variant="top"
-                                    placeholder="456"
+                                    placeholder={t('portfolios.edit.custom_asset_id_placeholder')}
                                     value={allocationForm.data.custom_asset_id}
                                     onChange={e => allocationForm.setData('custom_asset_id', e.target.value)}
                                     error={allocationForm.errors.custom_asset_id}
                                 />
 
                                 <FormInputText
-                                    label="Score"
+                                    label={t('portfolios.edit.score_label')}
                                     variant="top"
-                                    placeholder="0"
+                                    placeholder={t('portfolios.edit.score_placeholder')}
                                     value={allocationForm.data.score}
                                     onChange={e => allocationForm.setData('score', e.target.value)}
                                     error={allocationForm.errors.score}
@@ -131,25 +133,27 @@ export default function Edit({ auth, portfolio }: EditProps) {
                     </div>
                 </div>
 
-                <Card title="Allocations">
+                <Card title={t('portfolios.edit.allocations_title')}>
                     <DataTable<WalletAllocation>
                         data={portfolio.walletAllocations || []}
                         columns={[
                             {
                                 key: "asset",
-                                label: "Asset",
+                                label: t('portfolios.edit.column_asset'),
                                 grow: true,
                                 render: (item) => item.asset?.name || item.customAsset?.name || '-'
                             },
                             {
                                 key: "score",
-                                label: "Score",
+                                label: t('portfolios.edit.column_score'),
                                 render: (item) => item.score.toString()
                             },
                             {
                                 key: "type",
-                                label: "Type",
-                                render: (item) => item.asset_id ? 'Listed' : 'Unlisted'
+                                label: t('portfolios.edit.column_type'),
+                                render: (item) => item.asset_id
+                                    ? t('portfolios.edit.type_listed')
+                                    : t('portfolios.edit.type_unlisted')
                             },
                         ]}
                         actions={(item) => (

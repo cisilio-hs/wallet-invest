@@ -6,12 +6,14 @@ import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { useRef, FormEvent } from 'react';
 import { UpdatePasswordFormData } from '@/types';
+import { useI18n } from '@/i18n';
 
 interface UpdatePasswordFormProps {
     className?: string;
 }
 
 export default function UpdatePasswordForm({ className = '' }: UpdatePasswordFormProps) {
+    const { t } = useI18n();
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 
@@ -53,12 +55,11 @@ export default function UpdatePasswordForm({ className = '' }: UpdatePasswordFor
         <section className={className}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900">
-                    Update Password
+                    {t('profile.update_password.title')}
                 </h2>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    Ensure your account is using a long, random password to stay
-                    secure.
+                    {t('profile.update_password.description')}
                 </p>
             </header>
 
@@ -66,7 +67,7 @@ export default function UpdatePasswordForm({ className = '' }: UpdatePasswordFor
                 <div>
                     <InputLabel
                         htmlFor="current_password"
-                        value="Current Password"
+                        value={t('profile.update_password.current_password')}
                     />
 
                     <TextInput
@@ -88,7 +89,7 @@ export default function UpdatePasswordForm({ className = '' }: UpdatePasswordFor
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="password" value="New Password" />
+                    <InputLabel htmlFor="password" value={t('profile.update_password.new_password')} />
 
                     <TextInput
                         id="password"
@@ -106,7 +107,7 @@ export default function UpdatePasswordForm({ className = '' }: UpdatePasswordFor
                 <div>
                     <InputLabel
                         htmlFor="password_confirmation"
-                        value="Confirm Password"
+                        value={t('profile.update_password.confirm_password')}
                     />
 
                     <TextInput
@@ -127,7 +128,9 @@ export default function UpdatePasswordForm({ className = '' }: UpdatePasswordFor
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    <PrimaryButton disabled={processing}>
+                        {t('profile.update_password.save_button')}
+                    </PrimaryButton>
 
                     <Transition
                         show={recentlySuccessful}
@@ -137,7 +140,7 @@ export default function UpdatePasswordForm({ className = '' }: UpdatePasswordFor
                         leaveTo="opacity-0"
                     >
                         <p className="text-sm text-gray-600">
-                            Saved.
+                            {t('profile.update_password.saved_message')}
                         </p>
                     </Transition>
                 </div>

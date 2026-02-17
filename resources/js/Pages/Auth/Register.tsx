@@ -6,8 +6,10 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { RegisterFormData } from '@/types';
+import { useI18n } from '@/i18n';
 
 export default function Register() {
+    const { t } = useI18n();
     const { data, setData, post, processing, errors, reset } = useForm<RegisterFormData>({
         name: '',
         email: '',
@@ -25,11 +27,11 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title={t('auth.register.title')} />
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <InputLabel htmlFor="name" value={t('auth.register.name')} />
 
                     <TextInput
                         id="name"
@@ -46,7 +48,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="email" value={t('auth.register.email')} />
 
                     <TextInput
                         id="email"
@@ -63,7 +65,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                    <InputLabel htmlFor="password" value={t('auth.register.password')} />
 
                     <TextInput
                         id="password"
@@ -82,7 +84,7 @@ export default function Register() {
                 <div className="mt-4">
                     <InputLabel
                         htmlFor="password_confirmation"
-                        value="Confirm Password"
+                        value={t('auth.register.confirm_password')}
                     />
 
                     <TextInput
@@ -109,11 +111,11 @@ export default function Register() {
                         href={route('login')}
                         className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
-                        Already registered?
+                        {t('auth.register.already_registered')}
                     </Link>
 
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
+                        {t('auth.register.button')}
                     </PrimaryButton>
                 </div>
             </form>

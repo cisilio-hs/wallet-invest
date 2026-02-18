@@ -89,59 +89,54 @@ export default function Edit({ auth, wallet }: EditProps) {
                     <div className="grow h-full">
                         <Card
                             title={t('wallets.edit.edit_wallet')}
+                            footerClass='flex justify gap-4'
                             footer={
-                                <div className="flex justify gap-4">
-                                    <PrimaryButton onClick={submitWallet} className="px-4 py-2 gap-2">
-                                        <FloppyDiskIcon className="h-4 w-4"/>
-                                        {t('wallets.edit.save_button')}
-                                    </PrimaryButton>
-                                </div>
+                                <PrimaryButton onClick={submitWallet} className="px-4 py-2 gap-2">
+                                    <FloppyDiskIcon className="h-4 w-4"/>
+                                    {t('wallets.edit.save_button')}
+                                </PrimaryButton>
                             }
                         >
-                            <div>
-                                <FormInputText
-                                    label={t('common.name')}
-                                    variant="top"
-                                    placeholder={t('wallets.index.name_placeholder')}
-                                    value={walletForm.data.name}
-                                    icon={WalletIcon}
-                                    onChange={e => walletForm.setData('name', e.target.value)}
-                                    error={walletForm.errors.name}
-                                />
-                            </div>
+                            <FormInputText
+                                label={t('common.name')}
+                                variant="top"
+                                placeholder={t('wallets.index.name_placeholder')}
+                                value={walletForm.data.name}
+                                icon={WalletIcon}
+                                onChange={e => walletForm.setData('name', e.target.value)}
+                                error={walletForm.errors.name}
+                            />
                         </Card>
                     </div>
                     <div className="grow">
                         <Card
                             title={t('wallets.edit.add_portfolio')}
+                            footerClass='flex justify gap-4'
                             footer={
-                                <div className="flex justify gap-4">
-                                    <PrimaryButton onClick={(createPortfolio)} className="px-4 py-2">
-                                        {t('common.save')}
-                                    </PrimaryButton>
-                                </div>
+                                <PrimaryButton onClick={(createPortfolio)} className="px-4 py-2">
+                                    {t('common.save')}
+                                </PrimaryButton>
                             }
+                            childrenClass='flex flex-col justify gap-4'
                         >
-                            <div className="flex flex-col justify gap-4">
-                                <FormInputText
-                                    label={t('common.name')}
-                                    variant="top"
-                                    placeholder={t('wallets.edit.portfolio_name_placeholder')}
-                                    value={createForm.data.name}
-                                    icon={FolderIcon}
-                                    onChange={e => createForm.setData('name', e.target.value)}
-                                    error={createForm.errors.name}
-                                />
+                            <FormInputText
+                                label={t('common.name')}
+                                variant="top"
+                                placeholder={t('wallets.edit.portfolio_name_placeholder')}
+                                value={createForm.data.name}
+                                icon={FolderIcon}
+                                onChange={e => createForm.setData('name', e.target.value)}
+                                error={createForm.errors.name}
+                            />
 
-                                <FormInputPercentage
-                                    label={t('wallets.edit.target_weight_label')}
-                                    variant="top"
-                                    placeholder={t('wallets.edit.target_weight_placeholder')}
-                                    value={createForm.data.target_weight}
-                                    onChange={e => createForm.setData("target_weight", Number(e.target.value))}
-                                    error={createForm.errors.target_weight}
-                                />
-                            </div>
+                            <FormInputPercentage
+                                label={t('wallets.edit.target_weight_label')}
+                                variant="top"
+                                placeholder={t('wallets.edit.target_weight_placeholder')}
+                                value={createForm.data.target_weight}
+                                onChange={e => createForm.setData("target_weight", Number(e.target.value))}
+                                error={createForm.errors.target_weight}
+                            />
                         </Card>
                     </div>
                 </div>

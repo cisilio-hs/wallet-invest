@@ -3,6 +3,11 @@ import { useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { User, WalletFormData } from '@/types';
 import { t } from '@/i18n';
+import Card from '@/Components/Card';
+import PrimaryButton from '@/Components/PrimaryButton';
+import { FloppyDiskIcon } from '@sidekickicons/react/24/outline';
+import FormInputText from '@/Components/FormInputText';
+import { WalletIcon } from '@heroicons/react/24/outline';
 
 interface CreateProps {
     auth: {
@@ -15,31 +20,33 @@ export default function Create({ auth }: CreateProps) {
         name: ''
     });
 
-    function submit(e: FormEvent<HTMLFormElement>) {
+    function submit(e: FormEvent) {
         e.preventDefault();
         post(route('wallets.store'));
     }
 
     return (
         <AuthenticatedLayout title={t('wallets.create.title')}>
-            <div className="p-6">
-                <form onSubmit={submit}>
-                    <input
-                        value={data.name}
-                        onChange={e => setData('name', e.target.value)}
-                        className="border p-2"
-                        placeholder={t('wallets.create.name_placeholder')}
-                    />
-
-                    {errors.name && (
-                        <div className="text-red-500">{errors.name}</div>
-                    )}
-
-                    <button className="block mt-4 bg-green-500 text-white px-4 py-2">
-                        {t('wallets.create.save_button')}
-                    </button>
-                </form>
-            </div>
+            <Card
+                title={t('wallets.edit.edit_wallet')}
+                footer={
+                    <PrimaryButton onClick={submit} className="px-4 py-2 gap-2">
+                        <FloppyDiskIcon className="h-4 w-4"/>
+                        {t('wallets.edit.save_button')}
+                    </PrimaryButton>
+                }
+                footerClass='flex justify gap-4'
+            >
+                <FormInputText
+                    label={t('common.name')}
+                    variant="top"
+                    placeholder={t('wallets.index.name_placeholder')}
+                    value={data.name}
+                    icon={WalletIcon}
+                    onChange={e => setData('name', e.target.value)}
+                    error={errors.name}
+                />
+            </Card>
         </AuthenticatedLayout>
     );
 }

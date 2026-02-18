@@ -8,7 +8,7 @@ import { IdentificationIcon, PencilSquareIcon, TrashIcon } from '@heroicons/reac
 import { useForm, router } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { Portfolio, User, WalletAllocation } from '@/types';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface EditProps {
     auth: {
@@ -18,8 +18,6 @@ interface EditProps {
 }
 
 export default function Edit({ auth, portfolio }: EditProps) {
-    const { t } = useI18n();
-
     // Form para editar portfolio
     const portfolioForm = useForm({
         name: portfolio.name,

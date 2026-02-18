@@ -2,7 +2,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Link, usePage } from '@inertiajs/react';
 import React from 'react';
 import { User } from '@/types';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface AuthPageProps {
     auth: {
@@ -13,7 +13,6 @@ interface AuthPageProps {
 export function UserMenu() {
     const { auth } = usePage().props as unknown as AuthPageProps;
     const user = auth.user;
-    const { t } = useI18n();
 
     // Get first letter of name for avatar fallback
     const avatarLetter = user?.name?.charAt(0).toUpperCase() || 'U';

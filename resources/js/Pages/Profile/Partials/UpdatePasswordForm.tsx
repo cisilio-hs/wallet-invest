@@ -6,14 +6,13 @@ import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { useRef, FormEvent } from 'react';
 import { UpdatePasswordFormData } from '@/types';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface UpdatePasswordFormProps {
     className?: string;
 }
 
 export default function UpdatePasswordForm({ className = '' }: UpdatePasswordFormProps) {
-    const { t } = useI18n();
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 

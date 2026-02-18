@@ -5,7 +5,7 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface ResetPasswordProps {
     token: string;
@@ -13,7 +13,6 @@ interface ResetPasswordProps {
 }
 
 export default function ResetPassword({ token, email }: ResetPasswordProps) {
-    const { t } = useI18n();
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
         email: email,

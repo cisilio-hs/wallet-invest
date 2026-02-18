@@ -11,7 +11,7 @@ import {
     BriefcaseIcon,
     PlusCircleIcon,
 } from '@heroicons/react/24/outline';
-import type { TranslationType } from '@/i18n';
+import { t } from '@/i18n';
 
 export interface MenuItem {
     label: string;
@@ -30,12 +30,12 @@ export interface MenuSection {
     items: SubmenuItem[];
 }
 
-export function getNavigation(t: (key: keyof TranslationType['navigation']) => string): MenuSection[] {
+export function getNavigation(): MenuSection[] {
     return [
         {
             items: [
                 {
-                    label: t('dashboard'),
+                    label: t('navigation.dashboard'),
                     href: route('dashboard'),
                     routeName: 'dashboard',
                     icon: HomeIcon,
@@ -43,76 +43,76 @@ export function getNavigation(t: (key: keyof TranslationType['navigation']) => s
             ],
         },
         {
-            header: t('investments'),
+            header: t('navigation.investments'),
             items: [
                 {
-                    label: t('wallets'),
+                    label: t('navigation.wallets'),
                     href: route('wallets.index'),
                     routeName: 'wallets.index',
                     icon: WalletIcon,
                     children: [
                         {
-                            label: t('all_wallets'),
+                            label: t('navigation.all_wallets'),
                             href: route('wallets.index'),
                             routeName: 'wallets.index',
                         },
                         {
-                            label: t('create_new'),
+                            label: t('navigation.create_new'),
                             href: route('wallets.create'),
                             routeName: 'wallets.create',
                         },
                     ],
                 },
                 {
-                    label: t('portfolios'),
+                    label: t('navigation.portfolios'),
                     href: route('portfolios.index'),
                     routeName: 'portfolios.index',
                     icon: FolderIcon,
                     children: [
                         {
-                            label: t('all_portfolios'),
+                            label: t('navigation.all_portfolios'),
                             href: route('portfolios.index'),
                             routeName: 'portfolios.index',
                         },
                     ],
                 },
                 {
-                    label: t('transactions'),
+                    label: t('navigation.transactions'),
                     href: '#',
                     icon: ArrowsRightLeftIcon,
                 },
                 {
-                    label: t('positions'),
+                    label: t('navigation.positions'),
                     href: '#',
                     icon: ClipboardDocumentListIcon,
                 },
             ],
         },
         {
-            header: t('analysis'),
+            header: t('navigation.analysis'),
             items: [
                 {
-                    label: t('reports'),
+                    label: t('navigation.reports'),
                     href: '#',
                     icon: DocumentChartBarIcon,
                 },
                 {
-                    label: t('assets'),
+                    label: t('navigation.assets'),
                     href: '#',
                     icon: BriefcaseIcon,
                 },
                 {
-                    label: t('banks_and_brokers'),
+                    label: t('navigation.banks_and_brokers'),
                     href: '#',
                     icon: BuildingLibraryIcon,
                 },
             ],
         },
         {
-            header: t('system'),
+            header: t('navigation.system'),
             items: [
                 {
-                    label: t('settings'),
+                    label: t('navigation.settings'),
                     href: '#',
                     icon: Cog6ToothIcon,
                 },
@@ -123,23 +123,3 @@ export function getNavigation(t: (key: keyof TranslationType['navigation']) => s
 
 // Exportação legada para compatibilidade (será removida após migração completa)
 export const navigation: MenuSection[] = [];
-function t(key: keyof TranslationType['navigation']): string {
-    const labels: Record<keyof TranslationType['navigation'], string> = {
-        dashboard: 'Dashboard',
-        investments: 'Investments',
-        wallets: 'Wallets',
-        all_wallets: 'All Wallets',
-        create_new: 'Create New',
-        portfolios: 'Portfolios',
-        all_portfolios: 'All Portfolios',
-        transactions: 'Transactions',
-        positions: 'Positions',
-        analysis: 'Analysis',
-        reports: 'Reports',
-        assets: 'Assets',
-        banks_and_brokers: 'Banks & Brokers',
-        system: 'System',
-        settings: 'Settings',
-    };
-    return labels[key];
-}

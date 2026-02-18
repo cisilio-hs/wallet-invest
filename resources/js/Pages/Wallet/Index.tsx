@@ -7,7 +7,7 @@ import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Card from '@/Components/Card';
 import FormInputText from '@/Components/FormInputText';
 import { FormEvent } from 'react';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface IndexProps {
     auth: {
@@ -17,8 +17,6 @@ interface IndexProps {
 }
 
 export default function Index({ auth, wallets }: IndexProps) {
-    const { t } = useI18n();
-
     const walletForm = useForm({
         name: ''
     });

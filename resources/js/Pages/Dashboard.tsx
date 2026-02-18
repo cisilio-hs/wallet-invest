@@ -1,11 +1,9 @@
 import Card from '@/Components/Card';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 export default function Dashboard() {
-    const { t } = useI18n();
-
     return (
         <AuthenticatedLayout title={t('dashboard.title')}>
             <Head title={t('dashboard.title')} />

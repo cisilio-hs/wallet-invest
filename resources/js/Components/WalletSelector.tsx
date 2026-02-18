@@ -1,13 +1,12 @@
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import useWallet from "@/Hooks/useWallet";
-import { useI18n } from "@/i18n";
+import { t } from "@/i18n";
 
 import { PlusIcon, Cog6ToothIcon, ChevronUpIcon, WalletIcon } from "@heroicons/react/24/outline";
 
 export default function WalletSelector() {
     const { wallets, currentWallet, selectWallet } = useWallet();
-    const { t } = useI18n();
 
     return (
         <Dropdown>

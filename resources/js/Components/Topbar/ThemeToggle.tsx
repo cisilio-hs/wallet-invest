@@ -1,11 +1,10 @@
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { useTheme } from '@/Contexts/ThemeContext';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 export function ThemeToggle() {
     const { isDark, toggleTheme } = useTheme();
-    const { t } = useI18n();
 
     return (
         <button

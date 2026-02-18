@@ -7,14 +7,13 @@ import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { useRef, useState, FormEvent } from 'react';
 import { DeleteUserFormData } from '@/types';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface DeleteUserFormProps {
     className?: string;
 }
 
 export default function DeleteUserForm({ className = '' }: DeleteUserFormProps) {
-    const { t } = useI18n();
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState<boolean>(false);
     const passwordInput = useRef<HTMLInputElement>(null);
 

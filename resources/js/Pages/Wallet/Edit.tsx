@@ -10,7 +10,7 @@ import { useForm, router } from '@inertiajs/react';
 import { useState, FormEvent } from 'react';
 import { Portfolio, User, Wallet } from '@/types';
 import { FloppyDiskIcon } from '@sidekickicons/react/24/outline';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface EditProps {
     auth: {
@@ -20,8 +20,6 @@ interface EditProps {
 }
 
 export default function Edit({ auth, wallet }: EditProps) {
-    const { t } = useI18n();
-
     // Form da Wallet
     const walletForm = useForm({
         name: wallet.name

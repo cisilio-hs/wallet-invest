@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { User, WalletFormData } from '@/types';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface CreateProps {
     auth: {
@@ -11,7 +11,6 @@ interface CreateProps {
 }
 
 export default function Create({ auth }: CreateProps) {
-    const { t } = useI18n();
     const { data, setData, post, errors } = useForm<WalletFormData>({
         name: ''
     });

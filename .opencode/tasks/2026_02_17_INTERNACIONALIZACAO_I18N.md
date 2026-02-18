@@ -31,18 +31,15 @@ Implementar sistema completo de internacionalização (i18n) para o Wallet Inves
 **Status:** ✅ **CONCLUÍDO**
 
 - [x] Criar diretório `resources/js/i18n/`
-- [x] Criar `types.ts` - Tipos TypeScript
 - [x] Criar `locales/pt-BR.ts` - Traduções em português (~150 chaves)
 - [x] Criar `locales/en.ts` - Traduções em inglês (~150 chaves)
 - [x] Criar `locales/index.ts` - Exportação dos locales
-- [x] Criar `I18nContext.tsx` - Provider com localStorage
-- [x] Criar `index.ts` - Exportação principal
-- [x] Atualizar `app.tsx` - Adicionar I18nProvider
+- [x] Criar `index.ts` - Função `t()` pura (sem Context/Hook)
 
 ### ✅ Fase 2: Atualização dos Componentes
 **Status:** ✅ **CONCLUÍDO**
 
-- [x] `lib/navigation.ts` - Menu de navegação (convertido para função com i18n)
+- [x] `lib/navigation.ts` - Menu de navegação
 - [x] `Pages/Auth/*.tsx` - 6 arquivos de autenticação
   - Login.tsx, Register.tsx, ForgotPassword.tsx, ResetPassword.tsx, ConfirmPassword.tsx, VerifyEmail.tsx
 - [x] `Pages/Wallet/*.tsx` - 3 arquivos de carteiras
@@ -91,85 +88,97 @@ validation:       // required, email, min, max...
 
 ---
 
+## Arquivos Criados
+
+### Frontend
+```
+resources/js/i18n/
+├── locales/
+│   ├── pt-BR.ts         # ~150 chaves em português
+│   ├── en.ts            # ~150 chaves em inglês
+│   └── index.ts         # Exportação dos locales
+└── index.ts             # Função t() pura
+```
+
+### Backend
+```
+lang/pt_BR/
+├── validation.php       # Validações
+├── auth.php            # Autenticação
+├── pagination.php      # Paginação
+└── passwords.php       # Recuperação de senha
+```
+
+---
+
 ## Arquivos Modificados
 
-### Novos Arquivos
-- `resources/js/i18n/types.ts`
-- `resources/js/i18n/locales/pt-BR.ts`
-- `resources/js/i18n/locales/en.ts`
-- `resources/js/i18n/I18nContext.tsx`
-- `resources/js/i18n/useI18n.ts`
-- `resources/js/i18n/index.ts`
-- `lang/pt_BR/validation.php`
-- `lang/pt_BR/auth.php`
-- `lang/pt_BR/pagination.php`
-- `lang/pt_BR/passwords.php`
-
-### Arquivos Modificados
-- `resources/js/app.tsx`
-- `config/app.php`
-- `resources/js/lib/navigation.ts`
-- `resources/js/Pages/Auth/*.tsx` (6 arquivos)
-- `resources/js/Pages/Wallet/*.tsx` (3 arquivos)
-- `resources/js/Pages/Portfolio/Edit.tsx`
-- `resources/js/Pages/Profile/*.tsx` (4 arquivos)
-- `resources/js/Components/*.tsx` (4+ arquivos)
-- `resources/js/Pages/Dashboard.tsx`
+- `resources/js/app.tsx` - Removido I18nProvider
+- `config/app.php` - Locale padrão pt_BR
+- `resources/js/lib/navigation.ts` - Usa t() importado
+- `resources/js/Layouts/AuthenticatedLayout.tsx` - Usa t() importado
+- `resources/js/Pages/Auth/*.tsx` (6 arquivos) - Import t from '@/i18n'
+- `resources/js/Pages/Wallet/*.tsx` (3 arquivos) - Import t from '@/i18n'
+- `resources/js/Pages/Portfolio/Edit.tsx` - Import t from '@/i18n'
+- `resources/js/Pages/Profile/*.tsx` (4 arquivos) - Import t from '@/i18n'
+- `resources/js/Components/*.tsx` (4+ arquivos) - Import t from '@/i18n'
+- `resources/js/Pages/Dashboard.tsx` - Import t from '@/i18n'
 
 ---
 
-## Referências
+## Como Usar
 
-- Padrão dos contexts existentes: `ThemeContext.tsx`, `WalletContext.tsx`
-- AssetTypes definidos em: `database/seeders/AssetTypeSeeder.php`
-- Mensagens de erro atualmente vêm do backend via Inertia (`form.errors`)
+### Import Simples
+
+```typescript
+import { t } from '@/i18n';
+
+// Uso em qualquer lugar
+<button>{t('common.save')}</button>
+<h1>{t('wallets.edit.title', { name: 'Minha Carteira' })}</h1>
+<span>{t(`assetTypes.${assetTypeSlug}`)}</span>
+```
+
+### Mudança de Idioma
+
+```typescript
+import { changeLocale } from '@/i18n';
+
+// Altera o idioma e recarrega a página
+changeLocale('en');  // ou 'pt-BR'
+```
 
 ---
 
-## Resumo da Implementação
+## Arquitetura
 
-### Sistema i18n Criado
+**Simplificação realizada:**
+- ❌ Removido: I18nContext, Provider, Hook useI18n()
+- ✅ Mantido: Função pura `t()` com import simples
+- ✅ Persistência: localStorage para idioma selecionado
+- ✅ Fallback: pt-BR quando chave não encontrada
 
-**Frontend (React):**
-- Context API com localStorage para persistência do idioma
-- Hook `useI18n()` para acesso às traduções
-- ~150 chaves organizadas por domínio
-- Suporte a interpolação de variáveis (`{{name}}`)
-- Fallback automático para pt-BR se chave não encontrada
+**Vantagens:**
+- Código muito mais simples (sem React Context overhead)
+- Funciona em qualquer lugar (utils, services, componentes)
+- Padrão consistente com `route()` do Ziggy
+- Tipagem TypeScript perfeita
 
-**Backend (Laravel):**
-- Locale padrão alterado para 'pt_BR'
-- Traduções completas de validação
-- Mensagens de autenticação em português
+---
 
-### Estatísticas
+## Estatísticas
 
 | Métrica | Valor |
 |---------|-------|
-| Arquivos criados | 11 |
+| Arquivos criados | 7 |
 | Arquivos modificados | 20+ |
 | Chaves de tradução | ~150 |
 | Idiomas suportados | 2 (pt-BR, en) |
-| Linhas de código | ~3000+ |
+| Linhas de código | ~2500+ |
 
-### Uso
+---
 
-```typescript
-// Nos componentes React
-const { t, locale, setLocale } = useI18n();
-
-// Tradução simples
-t('common.save') // "Salvar" ou "Save"
-
-// Com variáveis
-t('wallets.edit.title', { name: 'Minha Carteira' })
-// "Configurar Carteira: Minha Carteira"
-
-// AssetTypes do banco
-t(`assetTypes.${assetTypeSlug}`) // "Ação", "FII", etc.
-```
-
-### Próximos Passos (Opcional)
+## Próximos Passos (Opcional)
 
 - [ ] Adicionar seletor de idioma na interface (header/configurações)
 - [ ] Criar mais idiomas (es, fr, de)

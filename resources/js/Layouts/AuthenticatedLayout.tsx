@@ -6,7 +6,7 @@ import { SidebarProvider, useSidebar, Sidebar, SidebarItem, SidebarSubmenu, Side
 import { Topbar, UserMenu, ThemeToggle, TopbarIconWithBadge } from '@/Components/Topbar';
 import WalletSelector from '@/Components/WalletSelector';
 import { getNavigation } from '@/lib/navigation';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 import { BellIcon, Bars3Icon } from '@heroicons/react/24/outline';
 
 interface AuthenticatedLayoutProps {
@@ -17,8 +17,7 @@ interface AuthenticatedLayoutProps {
 // Componente interno que usa o contexto do sidebar
 function LayoutContent({ children, title }: AuthenticatedLayoutProps) {
     const { collapsed, toggleSidebar } = useSidebar();
-    const { t } = useI18n();
-    const navigation = getNavigation((key) => t(`navigation.${key}`));
+    const navigation = getNavigation();
 
     return (
         <div className="min-h-screen flex">

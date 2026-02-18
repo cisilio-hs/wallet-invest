@@ -2,14 +2,13 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface VerifyEmailProps {
     status?: string;
 }
 
 export default function VerifyEmail({ status }: VerifyEmailProps) {
-    const { t } = useI18n();
     const { post, processing } = useForm({});
 
     const submit = (e: FormEvent<HTMLFormElement>) => {

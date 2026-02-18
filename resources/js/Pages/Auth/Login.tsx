@@ -7,7 +7,7 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { LoginFormData } from '@/types';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface LoginProps {
     status?: string;
@@ -15,7 +15,6 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
-    const { t } = useI18n();
     const { data, setData, post, processing, errors, reset } = useForm<LoginFormData>({
         email: '',
         password: '',

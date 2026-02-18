@@ -4,7 +4,7 @@ import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 import Card from '@/Components/Card';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface PersonData {
     phone: string | null;
@@ -18,8 +18,6 @@ interface EditProps {
 }
 
 export default function Edit({ mustVerifyEmail, status, person }: EditProps) {
-    const { t } = useI18n();
-
     return (
         <AuthenticatedLayout title={t('profile.edit.title')}>
             <Head title={t('profile.edit.head_title')} />

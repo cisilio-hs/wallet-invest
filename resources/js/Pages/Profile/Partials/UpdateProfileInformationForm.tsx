@@ -6,7 +6,7 @@ import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { UpdateProfileFormData, User } from '@/types';
-import { useI18n } from '@/i18n';
+import { t } from '@/i18n';
 
 interface PersonData {
     phone: string | null;
@@ -33,7 +33,6 @@ export default function UpdateProfileInformation({
     person,
     className = '',
 }: UpdateProfileInformationProps) {
-    const { t } = useI18n();
     const user = usePage<PageProps>().props.auth.user;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =

@@ -2,66 +2,61 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\WalletAllocations\CreateWalletAllocation;
+use App\Actions\WalletAllocations\DeleteWalletAllocation;
+use App\Actions\WalletAllocations\UpdateWalletAllocation;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreCustomAssetRequest;
-use App\Http\Requests\UpdateCustomAssetRequest;
-use App\Models\CustomAsset;
+use App\Http\Requests\StoreWalletAllocationRequest;
+use App\Http\Requests\UpdateWalletAllocationRequest;
+use App\Models\Portfolio;
+use App\Models\WalletAllocation;
+use Illuminate\Http\RedirectResponse;
 
-class CustomAssetController extends Controller
+class WalletAllocationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCustomAssetRequest $request)
+    public function store(StoreWalletAllocationRequest $request, CreateWalletAllocation $createWalletAllocation): RedirectResponse
     {
-        //
-    }
+        $portfolio = Portfolio::findOrFail($request->portfolio_id);
+        
+        $this->authorize('create', [WalletAllocation::class, $portfolio]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(CustomAsset $customAsset)
-    {
-        //
-    }
+        $createWalletAllocation->execute(
+            portfolio: $portfolio,
+            assetId: $request->asset_id,
+            customAssetId: $request->custom_asset_id,
+            score: $request->score
+        );
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CustomAsset $customAsset)
-    {
-        //
+        return back()->with('success', 'Alocação criada com sucesso.');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCustomAssetRequest $request, CustomAsset $customAsset)
+    public function update(UpdateWalletAllocationRequest $request, WalletAllocation $walletAllocation, UpdateWalletAllocation $updateWalletAllocation): RedirectResponse
     {
-        //
+        $this->authorize('update', $walletAllocation);
+
+        $updateWalletAllocation->execute(
+            walletAllocation: $walletAllocation,
+            score: $request->score
+        );
+
+        return back()->with('success', 'Alocação atualizada com sucesso.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CustomAsset $customAsset)
+    public function destroy(WalletAllocation $walletAllocation, DeleteWalletAllocation $deleteWalletAllocation): RedirectResponse
     {
-        //
+        $this->authorize('delete', $walletAllocation);
+
+        $deleteWalletAllocation->execute($walletAllocation);
+
+        return back()->with('success', 'Alocação removida com sucesso.');
     }
 }

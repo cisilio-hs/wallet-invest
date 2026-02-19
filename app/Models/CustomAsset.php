@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\Models\Wallet $wallet
- * @property-read \App\Models\AssetType|null $assetType
+ * @property-read \App\Models\AssetType|null $type
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WalletAllocation> $walletAllocations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Position> $positions
@@ -42,7 +42,7 @@ class CustomAsset extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<AssetType, $this>
      */
-    public function assetType()
+    public function type()
     {
         return $this->belongsTo(AssetType::class);
     }

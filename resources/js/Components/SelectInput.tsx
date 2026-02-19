@@ -9,7 +9,7 @@ export default forwardRef<HTMLSelectElement, SelectInputProps>(
                 {...props}
                 ref={ref}
                 className={
-                    "rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 " +
+                    "rounded-md border-[var(--border-color)] bg-[var(--card-bg)] text-[var(--text-primary)] shadow-sm focus:border-[var(--accent-color)] focus:ring-[var(--accent-color)] " +
                     className
                 }
             />

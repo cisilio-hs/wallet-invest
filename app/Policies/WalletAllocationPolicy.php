@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Portfolio;
 use App\Models\User;
 use App\Models\WalletAllocation;
 
@@ -12,7 +13,7 @@ class WalletAllocationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -20,15 +21,15 @@ class WalletAllocationPolicy
      */
     public function view(User $user, WalletAllocation $walletAllocation): bool
     {
-        return false;
+        return $walletAllocation->portfolio->wallet->person_id === $user->person_id;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Portfolio $portfolio): bool
     {
-        return false;
+        return $portfolio->wallet->person_id === $user->person_id;
     }
 
     /**
@@ -36,7 +37,7 @@ class WalletAllocationPolicy
      */
     public function update(User $user, WalletAllocation $walletAllocation): bool
     {
-        return false;
+        return $walletAllocation->portfolio->wallet->person_id === $user->person_id;
     }
 
     /**
@@ -44,7 +45,7 @@ class WalletAllocationPolicy
      */
     public function delete(User $user, WalletAllocation $walletAllocation): bool
     {
-        return false;
+        return $walletAllocation->portfolio->wallet->person_id === $user->person_id;
     }
 
     /**

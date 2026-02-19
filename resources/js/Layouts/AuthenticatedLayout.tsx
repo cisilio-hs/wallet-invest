@@ -1,10 +1,11 @@
 import React, { ReactNode } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { ThemeProvider } from '@/Contexts/ThemeContext';
 import { WalletProvider } from '@/Contexts/WalletContext';
 import { SidebarProvider, useSidebar, Sidebar, SidebarItem, SidebarSubmenu, SidebarSection } from '@/Components/Sidebar';
 import { Topbar, UserMenu, ThemeToggle, TopbarIconWithBadge } from '@/Components/Topbar';
 import WalletSelector from '@/Components/WalletSelector';
+import { ToastContainer } from '@/Components/Toast';
 import { getNavigation } from '@/lib/navigation';
 import { t } from '@/i18n';
 import { BellIcon, Bars3Icon } from '@heroicons/react/24/outline';
@@ -14,9 +15,19 @@ interface AuthenticatedLayoutProps {
     title?: string;
 }
 
+interface PageProps {
+    flash?: {
+        success?: string;
+        error?: string;
+        info?: string;
+        warning?: string;
+    };
+}
+
 // Componente interno que usa o contexto do sidebar
 function LayoutContent({ children, title }: AuthenticatedLayoutProps) {
     const { collapsed, toggleSidebar } = useSidebar();
+    const { flash } = usePage().props as PageProps;
     const navigation = getNavigation();
 
     return (
@@ -99,6 +110,9 @@ function LayoutContent({ children, title }: AuthenticatedLayoutProps) {
                 <main className="flex-1 p-6 bg-[var(--content-bg)] overflow-auto">
                     {children}
                 </main>
+                
+                {/* Toast Notifications */}
+                <ToastContainer flash={flash} />
             </div>
         </div>
     );

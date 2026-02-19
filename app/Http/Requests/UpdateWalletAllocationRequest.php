@@ -11,7 +11,9 @@ class UpdateWalletAllocationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        $walletAllocation = $this->route('wallet_allocation');
+        
+        return $walletAllocation->portfolio->wallet->person_id === auth()->user()->person_id;
     }
 
     /**
@@ -22,7 +24,19 @@ class UpdateWalletAllocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'score' => ['required', 'integer', 'min:0'],
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'score.min' => 'O score deve ser maior ou igual a 0.',
         ];
     }
 }

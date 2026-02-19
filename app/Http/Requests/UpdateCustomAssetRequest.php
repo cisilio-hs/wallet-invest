@@ -11,7 +11,8 @@ class UpdateCustomAssetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        $customAsset = $this->route('custom_asset');
+        return $customAsset->wallet->person_id === auth()->user()->person_id;
     }
 
     /**
@@ -22,7 +23,23 @@ class UpdateCustomAssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'asset_type_id' => ['nullable', 'integer', 'exists:asset_types,id'],
+            'currency' => ['required', 'string', 'size:3'],
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'O nome do ativo é obrigatório.',
+            'currency.required' => 'A moeda é obrigatória.',
+            'currency.size' => 'A moeda deve ter exatamente 3 caracteres (ex: BRL, USD).',
         ];
     }
 }

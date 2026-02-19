@@ -27,8 +27,8 @@ export interface Wallet extends Model {
     is_dirty: boolean;
     person?: Person;
     portfolios?: Portfolio[];
-    customAssets?: CustomAsset[];
-    walletAllocations?: WalletAllocation[];
+    custom_assets?: CustomAsset[];
+    wallet_allocations?: WalletAllocation[];
     transactions?: Transaction[];
     positions?: Position[];
 }
@@ -38,7 +38,7 @@ export interface Portfolio extends Model {
     name: string;
     target_weight: number;
     wallet?: Wallet;
-    walletAllocations?: WalletAllocation[];
+    wallet_allocations?: WalletAllocation[];
 }
 
 export interface Asset extends Model {
@@ -50,7 +50,7 @@ export interface Asset extends Model {
     minimum_order_quantity?: number;
     minimum_order_value?: number;
     type?: AssetType;
-    walletAllocations?: WalletAllocation[];
+    wallet_allocations?: WalletAllocation[];
     transactions?: Transaction[];
     positions?: Position[];
 }
@@ -67,8 +67,8 @@ export interface CustomAsset extends Model {
     name: string;
     currency: string;
     wallet?: Wallet;
-    assetType?: AssetType;
-    walletAllocations?: WalletAllocation[];
+    type?: AssetType;
+    wallet_allocations?: WalletAllocation[];
     transactions?: Transaction[];
     positions?: Position[];
 }
@@ -82,7 +82,7 @@ export interface WalletAllocation extends Model {
     wallet?: Wallet;
     portfolio?: Portfolio;
     asset?: Asset;
-    customAsset?: CustomAsset;
+    custom_asset?: CustomAsset;
 }
 
 export interface Transaction extends Model {
@@ -96,7 +96,7 @@ export interface Transaction extends Model {
     traded_at: string;
     wallet?: Wallet;
     asset?: Asset;
-    customAsset?: CustomAsset;
+    custom_asset?: CustomAsset;
     // Computed property
     type: 'buy' | 'sell';
 }
@@ -110,7 +110,7 @@ export interface Position extends Model {
     is_dirty: boolean;
     wallet?: Wallet;
     asset?: Asset;
-    customAsset?: CustomAsset;
+    custom_asset?: CustomAsset;
 }
 
 // Inertia shared props

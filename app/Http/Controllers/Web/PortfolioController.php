@@ -63,7 +63,7 @@ class PortfolioController extends Controller
     {
         $this->authorize('update', $portfolio);
 
-        $portfolio->load('walletAllocations.asset');
+        $portfolio->load(['walletAllocations.asset', 'walletAllocations.customAsset']);
 
         return Inertia::render('Portfolio/Edit', [
             'portfolio' => $portfolio,

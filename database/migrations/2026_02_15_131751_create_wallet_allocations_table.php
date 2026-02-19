@@ -37,7 +37,8 @@ return new class extends Migration
             $table->timestamps();
 
             // Unique constraint: one allocation per wallet/portfolio/asset combination
-            $table->unique(['wallet_id', 'portfolio_id', 'asset_id', 'custom_asset_id'], 'unique_allocation');
+            $table->unique(['wallet_id', 'asset_id']);
+            $table->unique(['wallet_id', 'custom_asset_id']);
         });
     }
 

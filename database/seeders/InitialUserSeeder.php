@@ -22,7 +22,7 @@ class InitialUserSeeder extends Seeder
             'id' => 1,
             'name' => 'Admin',
             'email' => 'admin@local.com',
-            'password' => Hash::make('0000'),
+            'password' => Hash::make('0'),
             'person_id' => $person->id,
         ]);
     }

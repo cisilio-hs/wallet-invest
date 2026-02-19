@@ -22,6 +22,7 @@ export const ptBR = {
         info: 'Informação',
         yes: 'Sim',
         no: 'Não',
+        select: 'Selecionar',
     },
 
     navigation: {
@@ -147,12 +148,47 @@ export const ptBR = {
             score_label: 'Score',
             score_placeholder: '0',
             allocations_title: 'Alocações',
+            column_ticker: 'Código',
             column_asset: 'Ativo',
             column_score: 'Score',
             column_type: 'Tipo',
             type_listed: 'Listado',
             type_unlisted: 'Não Listado',
             delete_confirm: 'Deseja realmente excluir esta alocação?',
+            select_asset: 'Buscar ativo (ticker ou nome)...',
+            no_results: 'Nenhum ativo encontrado',
+            edit_score: 'Editar Score',
+            edit_score_title: 'Editar Score da Alocação',
+            asset_preview: 'Detalhes do Ativo',
+            validation: {
+                asset_required: 'Selecione um ativo',
+                score_min: 'O score deve ser maior ou igual a 0',
+                asset_xor: 'Informe um ativo listado OU um ativo customizado',
+                asset_duplicate: 'Este ativo já está alocado nesta carteira',
+            },
+            success: {
+                created: 'Alocação criada com sucesso',
+                updated: 'Alocação atualizada com sucesso',
+                deleted: 'Alocação removida com sucesso',
+            },
+        },
+    },
+
+    custom_assets: {
+        title: 'Meus Ativos Customizados',
+        subtitle: 'Gerencie seus ativos não listados em bolsas',
+        create: 'Novo Ativo Customizado',
+        edit: 'Editar Ativo Customizado',
+        delete_blocked: 'Não é possível excluir este ativo pois existem alocações ou transações vinculadas',
+        fields: {
+            name: 'Nome do Ativo',
+            asset_type: 'Tipo do Ativo',
+            currency: 'Moeda',
+        },
+        success: {
+            created: 'Ativo customizado criado com sucesso',
+            updated: 'Ativo customizado atualizado com sucesso',
+            deleted: 'Ativo customizado removido com sucesso',
         },
     },
 

@@ -22,6 +22,7 @@ export const en = {
         info: 'Information',
         yes: 'Yes',
         no: 'No',
+        select: 'Select',
     },
 
     navigation: {
@@ -153,6 +154,40 @@ export const en = {
             type_listed: 'Listed',
             type_unlisted: 'Unlisted',
             delete_confirm: 'Do you really want to delete this allocation?',
+            select_asset: 'Search asset (ticker or name)...',
+            no_results: 'No assets found',
+            edit_score: 'Edit Score',
+            edit_score_title: 'Edit Allocation Score',
+            asset_preview: 'Asset Details',
+            validation: {
+                asset_required: 'Select an asset',
+                score_min: 'Score must be greater than or equal to 0',
+                asset_xor: 'Enter a listed asset OR a custom asset',
+                asset_duplicate: 'This asset is already allocated in this wallet',
+            },
+            success: {
+                created: 'Allocation created successfully',
+                updated: 'Allocation updated successfully',
+                deleted: 'Allocation removed successfully',
+            },
+        },
+    },
+
+    custom_assets: {
+        title: 'My Custom Assets',
+        subtitle: 'Manage your unlisted assets',
+        create: 'New Custom Asset',
+        edit: 'Edit Custom Asset',
+        delete_blocked: 'Cannot delete this asset as there are allocations or transactions linked to it',
+        fields: {
+            name: 'Asset Name',
+            asset_type: 'Asset Type',
+            currency: 'Currency',
+        },
+        success: {
+            created: 'Custom asset created successfully',
+            updated: 'Custom asset updated successfully',
+            deleted: 'Custom asset removed successfully',
         },
     },
 

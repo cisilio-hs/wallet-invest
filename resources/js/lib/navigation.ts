@@ -86,6 +86,12 @@ export function getNavigation(): MenuSection[] {
                     href: '#',
                     icon: ClipboardDocumentListIcon,
                 },
+                {
+                    label: t('custom_assets.title'),
+                    href: route('custom-assets.index'),
+                    routeName: 'custom-assets.index',
+                    icon: BriefcaseIcon,
+                },
             ],
         },
         {

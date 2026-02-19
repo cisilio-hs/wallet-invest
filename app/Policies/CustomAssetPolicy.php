@@ -12,7 +12,7 @@ class CustomAssetPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -20,7 +20,7 @@ class CustomAssetPolicy
      */
     public function view(User $user, CustomAsset $customAsset): bool
     {
-        return false;
+        return $customAsset->wallet->person_id === $user->person_id;
     }
 
     /**
@@ -28,7 +28,7 @@ class CustomAssetPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -36,7 +36,7 @@ class CustomAssetPolicy
      */
     public function update(User $user, CustomAsset $customAsset): bool
     {
-        return false;
+        return $customAsset->wallet->person_id === $user->person_id;
     }
 
     /**
@@ -44,7 +44,7 @@ class CustomAssetPolicy
      */
     public function delete(User $user, CustomAsset $customAsset): bool
     {
-        return false;
+        return $customAsset->wallet->person_id === $user->person_id;
     }
 
     /**

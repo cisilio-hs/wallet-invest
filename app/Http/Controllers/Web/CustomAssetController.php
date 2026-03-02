@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCustomAssetRequest;
 use App\Models\AssetType;
 use App\Models\CustomAsset;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,11 +17,17 @@ class CustomAssetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $wallet = auth()->user()->person->wallets()->first(); // TODO: Get selected wallet
-        
-        $customAssets = CustomAsset::where('wallet_id', $wallet->id)
+        $validated = $request->validate([
+            'wallet_id' => ['nullable', 'integer', 'exists:wallets,id'],
+        ]);
+
+        $wallet = auth()->user()->person->wallets()
+            ->where('id', $validated['wallet_id'] ?? 0)
+            ->first();
+
+        $customAssets = CustomAsset::where('wallet_id', $wallet?->id)
             ->with('type')
             ->get();
 
@@ -46,8 +53,10 @@ class CustomAssetController extends Controller
      */
     public function store(StoreCustomAssetRequest $request): RedirectResponse
     {
-        $wallet = auth()->user()->person->wallets()->first(); // TODO: Get selected wallet
-        
+        $wallet = auth()->user()->person->wallets()
+            ->where('id', $request->wallet_id)
+            ->firstOrFail();
+
         CustomAsset::create([
             'wallet_id' => $wallet->id,
             'name' => $request->name,
@@ -55,7 +64,8 @@ class CustomAssetController extends Controller
             'currency' => $request->currency,
         ]);
 
-        return redirect()->route('custom-assets.index')->with('success', 'Ativo criado com sucesso.');
+        return redirect()->route('custom-assets.index', ['wallet_id' => $wallet->id])
+            ->with('success', 'Ativo criado com sucesso.');
     }
 
     /**

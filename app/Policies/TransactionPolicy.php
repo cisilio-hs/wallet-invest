@@ -4,15 +4,20 @@ namespace App\Policies;
 
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Wallet;
 
 class TransactionPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user, ?Wallet $wallet = null): bool
     {
-        return false;
+        if ($wallet === null) {
+            return true;
+        }
+
+        return $wallet->person_id === $user->person_id;
     }
 
     /**
@@ -20,15 +25,15 @@ class TransactionPolicy
      */
     public function view(User $user, Transaction $transaction): bool
     {
-        return false;
+        return $transaction->wallet->person_id === $user->person_id;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Wallet $wallet): bool
     {
-        return false;
+        return $wallet->person_id === $user->person->id;
     }
 
     /**
@@ -36,7 +41,7 @@ class TransactionPolicy
      */
     public function update(User $user, Transaction $transaction): bool
     {
-        return false;
+        return $transaction->wallet->person_id === $user->person_id;
     }
 
     /**
@@ -44,7 +49,7 @@ class TransactionPolicy
      */
     public function delete(User $user, Transaction $transaction): bool
     {
-        return false;
+        return $transaction->wallet->person_id === $user->person_id;
     }
 
     /**

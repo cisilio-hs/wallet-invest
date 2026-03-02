@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property int $wallet_id
+ * @property int $transaction_type_id
  * @property int|null $asset_id
  * @property int|null $custom_asset_id
  * @property float $quantity
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $updated_at
  * @property-read string $type
  * @property-read \App\Models\Wallet $wallet
+ * @property-read \App\Models\TransactionType $transactionType
  * @property-read \App\Models\Asset|null $asset
  * @property-read \App\Models\CustomAsset|null $customAsset
  */
@@ -29,6 +31,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'wallet_id',
+        'transaction_type_id',
         'asset_id',
         'custom_asset_id',
         'quantity',
@@ -46,11 +49,36 @@ class Transaction extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = ['type'];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Wallet, $this>
      */
     public function wallet()
     {
         return $this->belongsTo(Wallet::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<TransactionType, $this>
+     */
+    public function transactionType()
+    {
+        return $this->belongsTo(TransactionType::class, 'transaction_type_id');
+    }
+
+    /**
+     * Alias for transactionType (snake_case).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<TransactionType, $this>
+     */
+    public function transaction_type()
+    {
+        return $this->transactionType();
     }
 
     /**
@@ -70,10 +98,20 @@ class Transaction extends Model
     }
 
     /**
-     * Computed attribute: transaction type (buy or sell)
+     * Alias for customAsset (snake_case for API consistency).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<CustomAsset, $this>
+     */
+    public function custom_asset()
+    {
+        return $this->customAsset();
+    }
+
+    /**
+     * Computed attribute: transaction type slug (buy, sell, split, etc.)
      */
     public function getTypeAttribute(): string
     {
-        return $this->quantity > 0 ? 'buy' : 'sell';
+        return $this->transactionType?->slug ?? 'unknown';
     }
 }

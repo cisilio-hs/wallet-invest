@@ -192,6 +192,56 @@ export const ptBR = {
         },
     },
 
+    transactions: {
+        title: 'Transações',
+        subtitle: 'Registro de operações financeiras',
+        create: 'Nova Transação',
+        edit: 'Editar Transação',
+        delete_confirm: 'Deseja realmente excluir esta transação?',
+        empty_title: 'Nenhuma transação',
+        empty_description: 'Comece registrando sua primeira operação.',
+        select_asset: 'Buscar ativo (ticker ou nome)...',
+        select_wallet_description: 'Escolha uma carteira no menu superior para visualizar as transações.',
+        select_wallet_title: 'Selecione uma carteira',
+        asset_preview: 'Detalhes do Ativo',
+        asset_readonly: 'O ativo não pode ser alterado. Exclua e crie uma nova transação se necessário.',
+        quantity_hint: 'Quantidade sempre positiva. O sinal é definido pelo tipo.',
+        fields: {
+            asset: 'Ativo',
+            transaction_type: 'Tipo de Operação',
+            quantity: 'Quantidade',
+            unit_price: 'Preço Unitário',
+            gross_amount: 'Valor Total',
+            currency: 'Moeda',
+            traded_at: 'Data da Operação',
+        },
+        types: {
+            buy: 'Compra',
+            sell: 'Venda',
+            bonus: 'Bonificação',
+            split: 'Desmembramento',
+            reverse_split: 'Grupamento',
+            dividend: 'Dividendo',
+            jcp: 'JCP',
+        },
+        quantity_sign: {
+            positive: '(+)',
+            negative: '(-)',
+            neutral: '(=)',
+        },
+        validation: {
+            asset_required: 'Selecione um ativo',
+            quantity_positive: 'A quantidade deve ser maior que zero',
+            unit_price_positive: 'O preço deve ser maior ou igual a zero',
+            transaction_type_required: 'Selecione o tipo de operação',
+        },
+        success: {
+            created: 'Transação criada com sucesso',
+            updated: 'Transação atualizada com sucesso',
+            deleted: 'Transação removida com sucesso',
+        },
+    },
+
     profile: {
         edit: {
             title: 'Perfil',

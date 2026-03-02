@@ -35,7 +35,8 @@ return new class extends Migration
             $table->timestamps();
 
             // Unique constraint: one position per wallet/asset combination
-            $table->unique(['wallet_id', 'asset_id', 'custom_asset_id'], 'unique_position');
+            $table->unique(['wallet_id', 'asset_id']);
+            $table->unique(['wallet_id', 'custom_asset_id']);
         });
     }
 

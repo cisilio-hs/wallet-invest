@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\CustomAssetController;
 use App\Http\Controllers\Web\PortfolioController;
+use App\Http\Controllers\Web\TransactionController;
 use App\Http\Controllers\Web\WalletAllocationController;
 use App\Http\Controllers\Web\WalletController;
 use Illuminate\Foundation\Application;
@@ -33,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('portfolios', PortfolioController::class);
     Route::resource('wallet-allocations', WalletAllocationController::class)->only(['store', 'update', 'destroy']);
     Route::resource('custom-assets', CustomAssetController::class);
+    Route::resource('transactions', TransactionController::class);
 });
 
 require __DIR__.'/auth.php';

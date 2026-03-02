@@ -18,6 +18,10 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->foreignId('transaction_type_id')
+                ->constrained('transaction_types')
+                ->restrictOnDelete();
+
             $table->foreignId('asset_id')
                 ->nullable()
                 ->constrained('assets')

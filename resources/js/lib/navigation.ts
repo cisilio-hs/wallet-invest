@@ -78,7 +78,8 @@ export function getNavigation(): MenuSection[] {
                 },
                 {
                     label: t('navigation.transactions'),
-                    href: '#',
+                    href: route('transactions.index'),
+                    routeName: 'transactions.index',
                     icon: ArrowsRightLeftIcon,
                 },
                 {

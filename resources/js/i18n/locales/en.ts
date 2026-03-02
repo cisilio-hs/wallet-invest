@@ -191,6 +191,56 @@ export const en = {
         },
     },
 
+    transactions: {
+        title: 'Transactions',
+        subtitle: 'Record of financial operations',
+        create: 'New Transaction',
+        edit: 'Edit Transaction',
+        delete_confirm: 'Do you really want to delete this transaction?',
+        empty_title: 'No transactions',
+        empty_description: 'Start by registering your first operation.',
+        select_asset: 'Search asset (ticker or name)...',
+        select_wallet_description: 'Choose a wallet from the top menu to view transactions.',
+        select_wallet_title: 'Select a wallet',
+        asset_preview: 'Asset Details',
+        asset_readonly: 'The asset cannot be changed. Delete and create a new transaction if needed.',
+        quantity_hint: 'Quantity always positive. Sign is defined by type.',
+        fields: {
+            asset: 'Asset',
+            transaction_type: 'Operation Type',
+            quantity: 'Quantity',
+            unit_price: 'Unit Price',
+            gross_amount: 'Total Amount',
+            currency: 'Currency',
+            traded_at: 'Trade Date',
+        },
+        types: {
+            buy: 'Buy',
+            sell: 'Sell',
+            bonus: 'Bonus',
+            split: 'Split',
+            reverse_split: 'Reverse Split',
+            dividend: 'Dividend',
+            jcp: 'JCP',
+        },
+        quantity_sign: {
+            positive: '(+)',
+            negative: '(-)',
+            neutral: '(=)',
+        },
+        validation: {
+            asset_required: 'Select an asset',
+            quantity_positive: 'Quantity must be greater than zero',
+            unit_price_positive: 'Price must be greater than or equal to zero',
+            transaction_type_required: 'Select the operation type',
+        },
+        success: {
+            created: 'Transaction created successfully',
+            updated: 'Transaction updated successfully',
+            deleted: 'Transaction removed successfully',
+        },
+    },
+
     profile: {
         edit: {
             title: 'Profile',

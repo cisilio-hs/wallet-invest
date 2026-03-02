@@ -85,20 +85,30 @@ export interface WalletAllocation extends Model {
     custom_asset?: CustomAsset;
 }
 
+export interface TransactionType extends Model {
+    name: string;
+    slug: string;
+    description?: string | null;
+    quantity_sign: 'positive' | 'negative' | 'neutral';
+    is_active: boolean;
+}
+
 export interface Transaction extends Model {
     wallet_id: number;
-    asset_id?: number;
-    custom_asset_id?: number;
+    transaction_type_id: number;
+    asset_id?: number | null;
+    custom_asset_id?: number | null;
     quantity: number;
     unit_price: number;
     gross_amount: number;
     currency: string;
     traded_at: string;
     wallet?: Wallet;
-    asset?: Asset;
-    custom_asset?: CustomAsset;
-    // Computed property
-    type: 'buy' | 'sell';
+    transaction_type?: TransactionType | null;
+    asset?: Asset | null;
+    custom_asset?: CustomAsset | null;
+    // Computed property (slug from transaction_type)
+    type: string;
 }
 
 export interface Position extends Model {
@@ -194,4 +204,39 @@ export interface FormInputBaseProps {
 export interface SelectOption {
     value: string;
     label: string;
+}
+
+// Pagination types
+export interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export interface Pagination {
+    current_page: number;
+    data: any[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: PaginationLink[];
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
+}
+
+// Transaction form data
+export interface TransactionFormData {
+    wallet_id: number;
+    asset_id: string;
+    custom_asset_id: string;
+    type: 'buy' | 'sell';
+    quantity: string;
+    unit_price: string;
+    currency: string;
+    traded_at: string;
 }

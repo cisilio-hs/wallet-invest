@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Wallet;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTransactionRequest extends FormRequest
@@ -12,11 +11,7 @@ class StoreTransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $wallet = Wallet::find($this->wallet_id);
-        
-        if (!$wallet) {
-            return false;
-        }
+        $wallet = $this->route('wallet');
 
         return $wallet->person_id === auth()->user()->person_id;
     }
@@ -29,7 +24,6 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'wallet_id' => ['required', 'integer', 'exists:wallets,id'],
             'transaction_type_id' => ['required', 'integer', 'exists:transaction_types,id'],
             'asset_id' => [
                 'nullable',

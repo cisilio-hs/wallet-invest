@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEvent, useState, useEffect } from 'react';
 import { t } from '@/i18n';
 import Card from '@/Components/Card';
@@ -8,31 +8,19 @@ import FormInputSelect from '@/Components/FormInputSelect';
 import InputTextSelect from '@/Components/InputTextSelect';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { AvailableAsset } from '@/Hooks/useAvailableAssets';
-import useWallet from '@/Hooks/useWallet';
-import { AssetType, TransactionType, User } from '@/types';
+import { AssetType, TransactionType, Wallet } from '@/types';
 
 interface CreateProps {
-    auth: {
-        user: User;
-    };
+    wallet: Wallet;
     assetTypes: AssetType[];
     transactionTypes: TransactionType[];
 }
 
-interface FormProps {
-    transactionTypes: TransactionType[];
-}
-
-function CreateTransactionForm({ transactionTypes }: FormProps) {
-    const { currentWallet, wallets } = useWallet();
-
-    const walletId = currentWallet?.id ?? null;
-
+function CreateTransactionForm({ wallet, assetTypes, transactionTypes }: CreateProps) {
     const [selectedAsset, setSelectedAsset] = useState<AvailableAsset | null>(null);
     const [assetError, setAssetError] = useState<string | null>(null);
 
     const { data, setData, post, processing, errors } = useForm({
-        wallet_id: walletId,
         transaction_type_id: '',
         asset_id: '',
         custom_asset_id: '',
@@ -42,11 +30,8 @@ function CreateTransactionForm({ transactionTypes }: FormProps) {
         traded_at: new Date().toISOString().slice(0, 16),
     });
 
-    
-    console.log(data.wallet_id);
-
     const selectedType = transactionTypes.find(
-        t => t.id.toString() === data.transaction_type_id
+        type => type.id.toString() === data.transaction_type_id
     );
 
     useEffect(() => {
@@ -58,15 +43,8 @@ function CreateTransactionForm({ transactionTypes }: FormProps) {
         }
     }, [selectedAsset]);
 
-    useEffect(() => {
-        if (walletId !== null) {
-            setData('wallet_id', walletId);
-        }
-    }, [walletId]);
-
     const quantity = parseFloat(data.quantity) || 0;
     const unitPrice = parseFloat(data.unit_price) || 0;
-    const grossAmount = quantity * unitPrice;
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -83,7 +61,7 @@ function CreateTransactionForm({ transactionTypes }: FormProps) {
             return;
         }
 
-        post(route('transactions.store'));
+        post(route('wallets.transactions.store', { wallet: wallet.id }));
     };
 
     const currencyOptions = [
@@ -93,13 +71,22 @@ function CreateTransactionForm({ transactionTypes }: FormProps) {
 
     return (
         <div className="p-6 max-w-3xl mx-auto">
+            {/* Header com Voltar */}
+            <div className="mb-4">
+                <Link href={route('wallets.transactions.index', { wallet: wallet.id })}>
+                    <PrimaryButton className="text-sm">
+                        ← Voltar
+                    </PrimaryButton>
+                </Link>
+            </div>
+
             <Card
                 title={t('transactions.create')}
                 footer={
                     <div className="flex justify-end gap-4">
                         <PrimaryButton
                             onClick={handleSubmit}
-                            disabled={processing || !walletId}
+                            disabled={processing}
                             className="px-6 py-2"
                         >
                             {t('common.save')}
@@ -108,35 +95,24 @@ function CreateTransactionForm({ transactionTypes }: FormProps) {
                 }
             >
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    
+                    {/* Wallet Info */}
+                    <div className="p-3 bg-[var(--sidebar-hover)] rounded-md text-sm">
+                        <span className="text-[var(--text-secondary)]">Carteira: </span>
+                        <span className="font-medium text-[var(--text-primary)]">{wallet.name}</span>
+                    </div>
+
                     {/* Asset Selection */}
-                    {walletId !== null ? (
-                        <InputTextSelect
-                            walletId={walletId}
-                            value={selectedAsset}
-                            onSelect={setSelectedAsset}
-                            label={t('transactions.fields.asset')}
-                            placeholder={
-                                t('transactions.select_asset') ||
-                                'Buscar ativo...'
-                            }
-                            error={assetError || undefined}
-                        />
-                    ) : wallets.length === 0 ? (
-                        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800 text-sm">
-                            Você precisa criar uma carteira primeiro.
-                            <Link
-                                href={route('wallets.create')}
-                                className="ml-2 underline font-medium"
-                            >
-                                Criar carteira
-                            </Link>
-                        </div>
-                    ) : (
-                        <div className="p-4 bg-[var(--sidebar-hover)] rounded-md text-[var(--text-muted)] text-sm">
-                            Carregando carteira...
-                        </div>
-                    )}
+                    <InputTextSelect
+                        walletId={wallet.id}
+                        value={selectedAsset}
+                        onSelect={setSelectedAsset}
+                        label={t('transactions.fields.asset')}
+                        placeholder={
+                            t('transactions.select_asset') ||
+                            'Buscar ativo...'
+                        }
+                        error={assetError || undefined}
+                    />
 
                     {/* Asset Preview */}
                     {selectedAsset && (
@@ -255,11 +231,13 @@ function CreateTransactionForm({ transactionTypes }: FormProps) {
     );
 }
 
-export default function Create({ transactionTypes }: CreateProps) {
+export default function Create({ wallet, assetTypes, transactionTypes }: CreateProps) {
     return (
         <AuthenticatedLayout title={t('transactions.create')}>
             <Head title={t('transactions.create')} />
             <CreateTransactionForm
+                wallet={wallet}
+                assetTypes={assetTypes}
                 transactionTypes={transactionTypes}
             />
         </AuthenticatedLayout>

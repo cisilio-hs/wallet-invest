@@ -4,15 +4,20 @@ namespace App\Policies;
 
 use App\Models\Position;
 use App\Models\User;
+use App\Models\Wallet;
 
 class PositionPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user, ?Wallet $wallet = null): bool
     {
-        return false;
+        if ($wallet === null) {
+            return false;
+        }
+
+        return $wallet->person_id === $user->person_id;
     }
 
     /**
@@ -20,7 +25,15 @@ class PositionPolicy
      */
     public function view(User $user, Position $position): bool
     {
-        return false;
+        return $position->wallet->person_id === $user->person_id;
+    }
+
+    /**
+     * Determine whether the user can recalculate the model.
+     */
+    public function recalculate(User $user, Position $position): bool
+    {
+        return $position->wallet->person_id === $user->person_id;
     }
 
     /**

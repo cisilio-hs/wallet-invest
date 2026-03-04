@@ -62,4 +62,35 @@ class Position extends Model
     {
         return $this->belongsTo(CustomAsset::class);
     }
+
+    /**
+     * Scope to eager load asset relationship.
+     */
+    public function scopeWithAsset($query)
+    {
+        return $query->with(['asset', 'customAsset']);
+    }
+
+    /**
+     * Scope to filter positions that need recalculation.
+     */
+    public function scopeDirty($query)
+    {
+        return $query->where('is_dirty', true);
+    }
+
+    /**
+     * Scope to filter positions with quantity > 0 or dirty (new positions).
+     * Shows positions with qty=0 only if dirty (not yet synchronized).
+     */
+    public function scopeHasQuantity($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('quantity', '>', 0)
+                ->orWhere(function ($q2) {
+                    $q2->where('quantity', '<=', 0)
+                        ->where('is_dirty', true);
+                });
+        });
+    }
 }

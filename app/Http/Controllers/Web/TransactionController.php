@@ -13,60 +13,54 @@ use App\Models\Transaction;
 use App\Models\TransactionType;
 use App\Models\Wallet;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class TransactionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of transactions for the wallet.
      */
-    public function index(Request $request): Response
+    public function index(Wallet $wallet): Response
     {
-        $validated = $request->validate([
-            'wallet_id' => ['nullable', 'integer', 'exists:wallets,id'],
-        ]);
-
-        $wallet = auth()->user()->person->wallets()
-            ->where('id', $validated['wallet_id'] ?? 0)
-            ->first();
-
         $this->authorize('viewAny', [Transaction::class, $wallet]);
 
-        $transactions = Transaction::where('wallet_id', $wallet?->id)
+        $transactions = Transaction::where('wallet_id', $wallet->id)
             ->with(['asset', 'custom_asset', 'transaction_type'])
             ->orderBy('traded_at', 'desc')
             ->paginate(20);
 
         return Inertia::render('Transaction/Index', [
             'transactions' => $transactions,
+            'wallet' => $wallet,
         ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new transaction.
      */
-    public function create(): Response
+    public function create(Wallet $wallet): Response
     {
         $assetTypes = AssetType::all();
         $transactionTypes = TransactionType::active()->get();
 
         return Inertia::render('Transaction/Create', [
+            'wallet' => $wallet,
             'assetTypes' => $assetTypes,
             'transactionTypes' => $transactionTypes,
         ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created transaction.
      */
-    public function store(StoreTransactionRequest $request, CreateTransaction $createTransaction): RedirectResponse
-    {
-        $wallet = Wallet::findOrFail($request->wallet_id);
-
+    public function store(
+        StoreTransactionRequest $request,
+        Wallet $wallet,
+        CreateTransaction $createTransaction
+    ): RedirectResponse {
         $this->authorize('create', [Transaction::class, $wallet]);
-        
+
         $createTransaction->execute(
             wallet: $wallet,
             transactionTypeId: $request->transaction_type_id,
@@ -78,23 +72,38 @@ class TransactionController extends Controller
             tradedAt: $request->traded_at
         );
 
-        return redirect()->route('transactions.index')->with('success', 'Transação criada com sucesso.');
+        return redirect()->route('wallets.transactions.index', $wallet)
+            ->with('success', 'Transação criada com sucesso.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display the transaction.
      */
-    public function edit(Transaction $transaction): Response
+    public function show(Transaction $transaction): Response
+    {
+        $this->authorize('view', $transaction);
+
+        $transaction->load(['asset', 'custom_asset', 'transaction_type']);
+
+        return Inertia::render('Transaction/Edit', [
+            'transaction' => $transaction,
+        ]);
+    }
+
+    /**
+     * Show the form for editing the transaction.
+     */
+    public function edit(Wallet $wallet, Transaction $transaction): Response
     {
         $this->authorize('update', $transaction);
 
         $assetTypes = AssetType::all();
         $transactionTypes = TransactionType::active()->get();
-        
-        // Load asset relationships
+
         $transaction->load(['asset', 'custom_asset', 'transaction_type']);
 
         return Inertia::render('Transaction/Edit', [
+            'wallet' => $wallet,
             'transaction' => $transaction,
             'assetTypes' => $assetTypes,
             'transactionTypes' => $transactionTypes,
@@ -102,10 +111,14 @@ class TransactionController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the transaction.
      */
-    public function update(UpdateTransactionRequest $request, Transaction $transaction, UpdateTransaction $updateTransaction): RedirectResponse
-    {
+    public function update(
+        UpdateTransactionRequest $request,
+        Wallet $wallet,
+        Transaction $transaction,
+        UpdateTransaction $updateTransaction
+    ): RedirectResponse {
         $this->authorize('update', $transaction);
 
         $updateTransaction->execute(
@@ -117,18 +130,22 @@ class TransactionController extends Controller
             tradedAt: $request->traded_at
         );
 
-        return redirect()->route('transactions.index')->with('success', 'Transação atualizada com sucesso.');
+        return redirect()->route('wallets.transactions.index', $wallet)
+            ->with('success', 'Transação atualizada com sucesso.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Transaction $transaction, DeleteTransaction $deleteTransaction): RedirectResponse
-    {
+    public function destroy(
+        Wallet $wallet,
+        Transaction $transaction,
+        DeleteTransaction $deleteTransaction
+    ) {
         $this->authorize('delete', $transaction);
 
         $deleteTransaction->execute($transaction);
 
-        return redirect()->route('transactions.index')->with('success', 'Transação removida com sucesso.');
+        return redirect()->route('wallets.transactions.index', $wallet);
     }
 }

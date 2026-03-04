@@ -41,3 +41,9 @@ Thumbs.db
 /auth.json
 Homestead.json
 Homestead.yaml
+
+# IDE Helper
+_ide_helper.php
+_ide_helper_models.php
+_intelephense_helper.php
+.phpstorm.meta.php

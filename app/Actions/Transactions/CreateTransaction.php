@@ -2,6 +2,7 @@
 
 namespace App\Actions\Transactions;
 
+use App\Actions\Positions\CreateOrMarkPositionDirty;
 use App\Models\Transaction;
 use App\Models\TransactionType;
 use App\Models\Wallet;
@@ -9,18 +10,14 @@ use Carbon\Carbon;
 
 class CreateTransaction
 {
+    public function __construct(
+        private readonly CreateOrMarkPositionDirty $createOrMarkPositionDirty
+    ) {}
+
     /**
      * Create a new transaction.
      *
-     * @param Wallet $wallet
-     * @param int $transactionTypeId
-     * @param int|null $assetId
-     * @param int|null $customAssetId
-     * @param float $quantity Always positive, sign is determined by transaction type
-     * @param float $unitPrice
-     * @param string $currency
-     * @param string|Carbon $tradedAt
-     * @return Transaction
+     * @param  float  $quantity  Always positive, sign is determined by transaction type
      */
     public function execute(
         Wallet $wallet,
@@ -66,6 +63,9 @@ class CreateTransaction
 
         // Mark wallet as dirty (needs consolidation)
         $wallet->update(['is_dirty' => true]);
+
+        // Create empty position or mark as dirty
+        $this->createOrMarkPositionDirty->execute($wallet, $assetId, $customAssetId);
 
         return $transaction;
     }

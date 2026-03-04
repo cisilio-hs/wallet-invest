@@ -123,6 +123,8 @@ export interface Position extends Model {
     custom_asset?: CustomAsset;
 }
 
+export type PositionWithAsset = Position;
+
 // Inertia shared props
 export interface AppPageProps {
     auth: {

@@ -30,7 +30,21 @@ export interface MenuSection {
     items: SubmenuItem[];
 }
 
-export function getNavigation(): MenuSection[] {
+export function getNavigation(currentWalletId?: number | null): MenuSection[] {
+    const transactionsHref = currentWalletId
+        ? route('wallets.transactions.index', { wallet: currentWalletId })
+        : '#';
+    const transactionsRouteName = currentWalletId
+        ? 'wallets.transactions.index'
+        : undefined;
+
+    const positionsHref = currentWalletId
+        ? route('wallets.positions.index', { wallet: currentWalletId })
+        : '#';
+    const positionsRouteName = currentWalletId
+        ? 'wallets.positions.index'
+        : undefined;
+
     return [
         {
             items: [
@@ -78,13 +92,14 @@ export function getNavigation(): MenuSection[] {
                 },
                 {
                     label: t('navigation.transactions'),
-                    href: route('transactions.index'),
-                    routeName: 'transactions.index',
+                    href: transactionsHref,
+                    routeName: transactionsRouteName,
                     icon: ArrowsRightLeftIcon,
                 },
                 {
                     label: t('navigation.positions'),
-                    href: '#',
+                    href: positionsHref,
+                    routeName: positionsRouteName,
                     icon: ClipboardDocumentListIcon,
                 },
                 {

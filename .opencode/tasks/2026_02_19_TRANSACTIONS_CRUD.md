@@ -55,9 +55,9 @@ As Transactions são a **fonte da verdade** do sistema. Toda movimentação fina
 - [x] Traduções en
 
 ### ⏳ Futuro
-- [ ] Marcar Position como dirty quando transaction muda
-- [ ] Comando Artisan para recalcular positions
-- [ ] Sistema de consolidação automática
+- [x] Marcar Position como dirty quando transaction muda
+- [x] Comando Artisan para recalcular positions
+- [x] Sistema de consolidação automática
 
 ---
 

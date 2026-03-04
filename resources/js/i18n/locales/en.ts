@@ -241,6 +241,45 @@ export const en = {
         },
     },
 
+    positions: {
+        title: 'Positions',
+        sync: 'Sync',
+        sync_all: 'Sync All',
+        dirty: 'Outdated',
+        synced: 'Synced',
+        dirty_warning: 'Wallet outdated',
+        dirty_description: 'Some positions need to be synced. Click the button to update.',
+        dirty_position_description: 'This position needs to be synced.',
+        empty: {
+            title: 'No positions',
+            description: 'Your positions will appear here after registering transactions.',
+        },
+        fields: {
+            asset: 'Asset',
+            ticker: 'Ticker',
+            name: 'Name',
+            quantity: 'Quantity',
+            average_price: 'Average Price',
+            total_value: 'Total Value',
+            status: 'Status',
+            type: 'Type',
+            currency: 'Currency',
+        },
+        details: {
+            title: 'Position Details',
+            asset_info: 'Asset Information',
+        },
+        transactions_history: 'Transaction History',
+        no_transactions: 'No transactions found.',
+        show: {
+            title: 'Position Details',
+        },
+        success: {
+            recalculated: 'Position recalculated successfully.',
+            recalculated_all: 'Positions recalculated successfully.',
+        },
+    },
+
     profile: {
         edit: {
             title: 'Profile',

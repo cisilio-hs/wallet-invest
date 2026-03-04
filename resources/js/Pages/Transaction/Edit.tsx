@@ -6,40 +6,38 @@ import Card from '@/Components/Card';
 import FormInputText from '@/Components/FormInputText';
 import FormInputSelect from '@/Components/FormInputSelect';
 import PrimaryButton from '@/Components/PrimaryButton';
-import { Transaction, AssetType, TransactionType, User } from '@/types';
+import { Transaction, AssetType, TransactionType, User, Wallet } from '@/types';
 
 interface EditProps {
     auth: {
         user: User;
     };
     transaction: Transaction;
+    wallet: Wallet;
     assetTypes: AssetType[];
     transactionTypes: TransactionType[];
 }
 
-export default function Edit({ transaction, transactionTypes }: EditProps) {
+export default function Edit({ transaction, wallet, transactionTypes }: EditProps) {
     const { data, setData, put, processing, errors } = useForm({
         transaction_type_id: transaction.transaction_type_id?.toString() || '',
         quantity: Math.abs(transaction.quantity).toString(),
         unit_price: transaction.unit_price.toString(),
         currency: transaction.currency,
-        traded_at: transaction.traded_at.slice(0, 16), // Format: YYYY-MM-DDTHH:mm
+        traded_at: transaction.traded_at.slice(0, 16),
     });
 
-    // Get selected transaction type
     const selectedType = transactionTypes.find(t => t.id.toString() === data.transaction_type_id);
 
-    // Calculate gross amount preview
     const quantity = parseFloat(data.quantity) || 0;
     const unitPrice = parseFloat(data.unit_price) || 0;
     const grossAmount = quantity * unitPrice;
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        put(route('transactions.update', transaction.id));
+        put(route('wallets.transactions.update', { wallet: wallet.id, transaction: transaction.id }));
     };
 
-    // Get asset name for display
     const assetName = transaction.asset?.name || transaction.custom_asset?.name || '-';
     const assetTicker = transaction.asset?.ticker || '';
 
@@ -102,7 +100,6 @@ export default function Edit({ transaction, transactionTypes }: EditProps) {
                             ))}
                         </FormInputSelect>
 
-                        {/* Quantity hint */}
                         <p className="text-xs text-[var(--text-muted)] -mt-4">
                             {t('transactions.quantity_hint') || 'Quantidade sempre positiva. O sinal é definido pelo tipo.'}
                         </p>

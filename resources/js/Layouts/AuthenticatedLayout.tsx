@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Head, usePage } from '@inertiajs/react';
 import { ThemeProvider } from '@/Contexts/ThemeContext';
-import { WalletProvider } from '@/Contexts/WalletContext';
+import { WalletProvider, useWalletContext } from '@/Contexts/WalletContext';
 import { SidebarProvider, useSidebar, Sidebar, SidebarItem, SidebarSubmenu, SidebarSection } from '@/Components/Sidebar';
 import { Topbar, UserMenu, ThemeToggle, TopbarIconWithBadge } from '@/Components/Topbar';
 import WalletSelector from '@/Components/WalletSelector';
@@ -28,7 +28,8 @@ interface PageProps {
 function LayoutContent({ children, title }: AuthenticatedLayoutProps) {
     const { collapsed, toggleSidebar } = useSidebar();
     const { flash } = usePage().props as PageProps;
-    const navigation = getNavigation();
+    const { currentWalletId } = useWalletContext();
+    const navigation = getNavigation(currentWalletId);
 
     return (
         <div className="min-h-screen flex">

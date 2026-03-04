@@ -1,13 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { t } from '@/i18n';
 import Card from '@/Components/Card';
 import DataTable from '@/Components/DataTable';
 import PrimaryButton from '@/Components/PrimaryButton';
 import useWallet from '@/Hooks/useWallet';
 import { PlusIcon, PencilSquareIcon, TrashIcon, ArrowsRightLeftIcon, WalletIcon } from '@heroicons/react/24/outline';
-import { Transaction, Asset, CustomAsset, Pagination, TransactionType } from '@/types';
+import { Pagination, Transaction, Asset, CustomAsset, TransactionType, Wallet } from '@/types';
 
 interface TransactionWithAsset extends Transaction {
     asset?: Asset | null;
@@ -19,6 +19,7 @@ interface IndexProps {
     transactions: Pagination & {
         data: TransactionWithAsset[];
     };
+    wallet: Wallet;
 }
 
 export default function Index(props: IndexProps) {
@@ -30,47 +31,27 @@ export default function Index(props: IndexProps) {
     );
 }
 
-function TransactionIndexContent({ transactions: initialTransactions }: IndexProps) {
+function TransactionIndexContent({ transactions, wallet }: IndexProps) {
     const { currentWallet } = useWallet();
-    const [transactions, setTransactions] = useState(initialTransactions);
-    const [loading, setLoading] = useState(false);
     const [deletingId, setDeletingId] = useState<number | null>(null);
 
-    // Load transactions when wallet changes
     useEffect(() => {
-        if (!currentWallet) return;
-
-        // Only reload if wallet changed from initial load
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentWalletId = urlParams.get('wallet_id');
-        
-        if (currentWalletId === String(currentWallet.id)) {
-            setTransactions(initialTransactions);
-            return;
+        if (currentWallet && currentWallet.id !== wallet.id) {
+            router.get(route('wallets.transactions.index', { wallet: currentWallet.id }));
         }
-
-        setLoading(true);
-        router.get(
-            route('transactions.index'),
-            { wallet_id: currentWallet.id },
-            {
-                preserveState: true,
-                replace: true,
-                onFinish: () => setLoading(false),
-            }
-        );
-    }, [currentWallet?.id, initialTransactions]);
+    }, [currentWallet?.id]);
 
     const handlePageChange = (url: string | null) => {
-        if (!url || !currentWallet) return;
-        const separator = url.includes('?') ? '&' : '?';
-        router.get(`${url}${separator}wallet_id=${currentWallet.id}`);
+        if (!url) return;
+        router.get(url);
     };
 
     const handleDelete = (id: number) => {
-        if (confirm(t('transactions.delete_confirm') || 'Deseja realmente excluir esta transação?')) {
+        if (confirm(t('transactions.delete_confirm'))) {
             setDeletingId(id);
-            router.delete(route('transactions.destroy', id), {
+            router.delete(route('wallets.transactions.destroy', { wallet: wallet.id, transaction: id }), {
+                preserveState: false,
+                preserveScroll: true,
                 onFinish: () => setDeletingId(null),
             });
         }
@@ -79,7 +60,7 @@ function TransactionIndexContent({ transactions: initialTransactions }: IndexPro
     const formatCurrency = (value: number, currency: string) => {
         return new Intl.NumberFormat('pt-BR', {
             style: 'currency',
-            currency: currency,
+            currency,
         }).format(value);
     };
 
@@ -111,36 +92,20 @@ function TransactionIndexContent({ transactions: initialTransactions }: IndexPro
         );
     }
 
-    if (loading) {
-        return (
-            <div className="p-6">
-                <Card>
-                    <div className="text-center py-12">
-                        <div className="animate-spin h-8 w-8 border-2 border-[var(--accent-color)] border-t-transparent rounded-full mx-auto"></div>
-                        <p className="mt-4 text-[var(--text-secondary)]">
-                            {t('common.loading')}
-                        </p>
-                    </div>
-                </Card>
-            </div>
-        );
-    }
-
     const hasTransactions = transactions.data.length > 0;
 
     return (
         <div className="p-6 space-y-6">
-            {/* Header with Create Button */}
             <div className="flex justify-between items-center">
                 <div>
                     <h2 className="text-xl font-semibold text-[var(--text-primary)]">
                         {t('transactions.title')}
                     </h2>
                     <p className="text-[var(--text-secondary)] mt-1">
-                        {t('transactions.subtitle')}
+                        {wallet.name}
                     </p>
                 </div>
-                <Link href={route('transactions.create')}>
+                <Link href={route('wallets.transactions.create', { wallet: wallet.id })}>
                     <PrimaryButton className="flex items-center gap-2">
                         <PlusIcon className="h-4 w-4" />
                         {t('transactions.create')}
@@ -148,7 +113,6 @@ function TransactionIndexContent({ transactions: initialTransactions }: IndexPro
                 </Link>
             </div>
 
-            {/* Transactions Table */}
             <Card>
                 {hasTransactions ? (
                     <>
@@ -209,9 +173,7 @@ function TransactionIndexContent({ transactions: initialTransactions }: IndexPro
                                             (item.quantity > 0 ? 'positive' : 'negative');
                                         
                                         return (
-                                            <span className={
-                                                quantitySign === 'negative' ? 'text-green-600' : 'text-red-600'
-                                            }>
+                                            <span className={quantitySign === 'negative' ? 'text-green-600' : 'text-red-600'}>
                                                 {formatCurrency(Math.abs(item.gross_amount), item.currency)}
                                             </span>
                                         );
@@ -220,7 +182,7 @@ function TransactionIndexContent({ transactions: initialTransactions }: IndexPro
                             ]}
                             actions={(item) => (
                                 <div className="flex flex-row space-x-2">
-                                    <Link href={route('transactions.edit', item.id)}>
+                                    <Link href={route('wallets.transactions.edit', { wallet: wallet.id, transaction: item.id })}>
                                         <PrimaryButton className="p-1">
                                             <PencilSquareIcon className="h-4 w-4" />
                                         </PrimaryButton>
@@ -236,7 +198,6 @@ function TransactionIndexContent({ transactions: initialTransactions }: IndexPro
                             )}
                         />
                         
-                        {/* Pagination */}
                         {transactions.links.length > 3 && (
                             <div className="flex justify-center mt-4 space-x-2">
                                 {transactions.links.map((link, index) => (
@@ -256,31 +217,17 @@ function TransactionIndexContent({ transactions: initialTransactions }: IndexPro
                         )}
                     </>
                 ) : (
-                    <EmptyState />
+                    <div className="text-center py-12">
+                        <ArrowsRightLeftIcon className="h-12 w-12 mx-auto text-[var(--text-muted)]" />
+                        <h3 className="mt-4 text-lg font-medium text-[var(--text-primary)]">
+                            Nenhuma transação
+                        </h3>
+                        <p className="mt-2 text-[var(--text-secondary)]">
+                            Comece registrando sua primeira compra ou venda.
+                        </p>
+                    </div>
                 )}
             </Card>
-        </div>
-    );
-}
-
-function EmptyState() {
-    return (
-        <div className="text-center py-12">
-            <ArrowsRightLeftIcon className="h-12 w-12 mx-auto text-[var(--text-muted)]" />
-            <h3 className="mt-4 text-lg font-medium text-[var(--text-primary)]">
-                Nenhuma transação
-            </h3>
-            <p className="mt-2 text-[var(--text-secondary)]">
-                Comece registrando sua primeira compra ou venda.
-            </p>
-            <div className="mt-6">
-                <Link href={route('transactions.create')}>
-                    <PrimaryButton className="flex items-center gap-2 mx-auto">
-                        <PlusIcon className="h-4 w-4" />
-                        {t('transactions.create')}
-                    </PrimaryButton>
-                </Link>
-            </div>
         </div>
     );
 }

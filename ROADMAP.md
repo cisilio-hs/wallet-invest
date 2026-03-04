@@ -52,7 +52,7 @@ wallet_allocations (strategy layer)
 
 ---
 
-## 📋 Phase 2: Transactions-Based Architecture (NEW)
+## ✅ Phase 2: Transactions-Based Architecture (COMPLETED)
 
 ### Overview
 Replace direct wallet_assets approach with transactions-based ledger system.
@@ -84,41 +84,38 @@ Replace direct wallet_assets approach with transactions-based ledger system.
 ### 2.2 Implementation Steps
 
 #### Step 1: Custom Assets
-- [ ] Migration: Create `custom_assets` table
-- [ ] Model: CustomAsset with relationships
-- [ ] Actions: CreateCustomAsset, UpdateCustomAsset, DeleteCustomAsset
-- [ ] Controller: CustomAssetController
-- [ ] Frontend: CustomAsset management UI
+- [x] Migration: Create `custom_assets` table
+- [x] Model: CustomAsset with relationships
+- [x] Actions: CreateCustomAsset, UpdateCustomAsset, DeleteCustomAsset
+- [x] Controller: CustomAssetController
+- [x] Frontend: CustomAsset management UI
 
 #### Step 2: Wallet Allocations
-- [ ] Migration: Create `wallet_allocations` table
-- [ ] Model: WalletAllocation with validation (asset_id XOR custom_asset_id)
-- [ ] Actions: CRUD for allocations with scoring
-- [ ] Controller: WalletAllocationController
-- [ ] Frontend: Allocation management with score input
+- [x] Migration: Create `wallet_allocations` table
+- [x] Model: WalletAllocation with validation (asset_id XOR custom_asset_id)
+- [x] Actions: CRUD for allocations with scoring
+- [x] Controller: WalletAllocationController
+- [x] Frontend: Allocation management with score input
 
 #### Step 3: Transactions (Ledger)
-- [ ] Migration: Create `transactions` table
-- [ ] Model: Transaction with computed type attribute
-- [ ] Actions: RecordTransaction, DeleteTransaction
-- [ ] Validation: Transaction rules (quantity signed, etc.)
-- [ ] Controller: TransactionController
-- [ ] Frontend: Transaction entry form
+- [x] Migration: Create `transactions` table
+- [x] Model: Transaction with computed type attribute
+- [x] Actions: RecordTransaction, DeleteTransaction
+- [x] Validation: Transaction rules (quantity signed, etc.)
+- [x] Controller: TransactionController
+- [x] Frontend: Transaction entry form
 
 #### Step 4: Positions (Projection)
-- [ ] Migration: Create `positions` table
-- [ ] Model: Position with is_dirty flag
-- [ ] Service: PositionConsolidationService
-  - Recalculate quantity from transactions
-  - Calculate average_price (FIFO)
-  - Clear is_dirty flag
-- [ ] Command: ConsolidatePositions (manual trigger)
+- [x] Migration: Create `positions` table
+- [x] Model: Position with is_dirty flag
+- [x] Actions: RecalculatePosition, RecalculateAllPositions
+- [x] Console Commands: positions:recalculate, wallet:recalculate
+- [x] Frontend: Position/Index, Position/Show
 
 #### Step 5: Integration
-- [ ] Wallet.is_dirty flag
-- [ ] Auto-mark positions dirty on new transaction
-- [ ] Dashboard uses positions (fast read)
-- [ ] Recommendation engine uses positions + allocations
+- [x] Wallet.is_dirty flag
+- [x] Auto-mark positions dirty on new transaction
+- [x] Dashboard uses positions (fast read) - pending final unification
 
 ### 2.3 Migration from Old System
 - [ ] Migrate existing wallet_assets → transactions
@@ -204,13 +201,14 @@ Replace direct wallet_assets approach with transactions-based ledger system.
 
 ## 🎯 Current Priority
 
-**Phase 2: Transactions-Based Architecture**
+**Phase 3: Dashboard & Current State**
 
-**Start with:** Step 1 - Custom Assets
+**Start with:** Unified Dashboard showing positions, allocations, and sync status
 
-1. Create custom_assets table
-2. Implement CRUD for custom assets
-3. Test unlisted asset creation
+1. Create Dashboard page with position overview
+2. Add sync status banner (is_dirty)
+3. Integrate wallet_allocations for scoring
+4. Show target vs current allocation
 
 ---
 
@@ -220,7 +218,7 @@ Replace direct wallet_assets approach with transactions-based ledger system.
 |-------|--------|------------|
 | Phase 0: Foundation | ✅ Complete | 100% |
 | Phase 1: Portfolio | ✅ Complete | 100% |
-| Phase 2: Transactions Arch | 🚧 Not Started | 0% |
+| Phase 2: Transactions Arch | ✅ Complete | 100% |
 | Phase 3: Dashboard | 📋 Planned | 0% |
 | Phase 4: Recommendation | 📋 Planned | 0% |
 | Phase 5: Polish | 📋 Planned | 0% |

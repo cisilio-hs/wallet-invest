@@ -242,6 +242,45 @@ export const ptBR = {
         },
     },
 
+    positions: {
+        title: 'Posições',
+        sync: 'Sincronizar',
+        sync_all: 'Sincronizar Todas',
+        dirty: 'Desatualizado',
+        synced: 'Sincronizado',
+        dirty_warning: 'Carteira desatualizada',
+        dirty_description: 'Algumas posições precisam ser sincronizadas. Clique no botão para atualizar.',
+        dirty_position_description: 'Esta posição precisa ser sincronizada.',
+        empty: {
+            title: 'Nenhuma posição',
+            description: 'Suas posições aparecerão aqui após registrar transações.',
+        },
+        fields: {
+            asset: 'Ativo',
+            ticker: 'Código',
+            name: 'Nome',
+            quantity: 'Quantidade',
+            average_price: 'Preço Médio',
+            total_value: 'Valor Total',
+            status: 'Status',
+            type: 'Tipo',
+            currency: 'Moeda',
+        },
+        details: {
+            title: 'Detalhes da Posição',
+            asset_info: 'Informações do Ativo',
+        },
+        transactions_history: 'Histórico de Transações',
+        no_transactions: 'Nenhuma transação encontrada.',
+        show: {
+            title: 'Detalhes da Posição',
+        },
+        success: {
+            recalculated: 'Position recalculada com sucesso.',
+            recalculated_all: 'Positions recalculadas com sucesso.',
+        },
+    },
+
     profile: {
         edit: {
             title: 'Perfil',

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\CustomAssetController;
 use App\Http\Controllers\Web\PortfolioController;
+use App\Http\Controllers\Web\PositionController;
 use App\Http\Controllers\Web\TransactionController;
 use App\Http\Controllers\Web\WalletAllocationController;
 use App\Http\Controllers\Web\WalletController;
@@ -34,7 +35,19 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('portfolios', PortfolioController::class);
     Route::resource('wallet-allocations', WalletAllocationController::class)->only(['store', 'update', 'destroy']);
     Route::resource('custom-assets', CustomAssetController::class);
-    Route::resource('transactions', TransactionController::class);
+
+    // Transactions aninhadas em wallet (shallow resource)
+    Route::resource('wallets.transactions', TransactionController::class)->scoped();
+
+    // Positions aninhadas em wallet
+    Route::get('/wallets/{wallet}/positions', [PositionController::class, 'index'])
+        ->name('wallets.positions.index');
+    Route::get('/wallets/{wallet}/positions/{position}', [PositionController::class, 'show'])
+        ->name('wallets.positions.show');
+    Route::post('/wallets/{wallet}/positions/{position}/recalculate', [PositionController::class, 'recalculate'])
+        ->name('wallets.positions.recalculate');
+    Route::post('/wallets/{wallet}/positions/recalculate-all', [PositionController::class, 'recalculateAll'])
+        ->name('wallets.positions.recalculateAll');
 });
 
 require __DIR__.'/auth.php';

@@ -2,66 +2,99 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\Positions\RecalculateAllPositions;
+use App\Actions\Positions\RecalculatePosition;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePositionRequest;
-use App\Http\Requests\UpdatePositionRequest;
 use App\Models\Position;
+use App\Models\Wallet;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PositionController extends Controller
 {
+    public function __construct(
+        private readonly RecalculatePosition $recalculatePosition,
+        private readonly RecalculateAllPositions $recalculateAllPositions
+    ) {}
+
     /**
-     * Display a listing of the resource.
+     * Display a listing of positions for the wallet.
      */
-    public function index()
+    public function index(Wallet $wallet): Response
     {
-        //
+        $this->authorize('viewAny', [Position::class, $wallet]);
+
+        $positions = $wallet->positions()
+            ->hasQuantity()
+            ->withAsset()
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return Inertia::render('Position/Index', [
+            'positions' => $positions,
+            'wallet' => $wallet,
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display the specified position.
      */
-    public function create()
+    public function show(Wallet $wallet, Position $position): Response
     {
-        //
+        $this->authorize('view', $position);
+
+        $position->load(['asset', 'customAsset']);
+
+        $transactions = $wallet->transactions()
+            ->where(function ($q) use ($position) {
+                $q->where('asset_id', $position->asset_id)
+                    ->orWhere('custom_asset_id', $position->custom_asset_id);
+            })
+            ->with(['transaction_type'])
+            ->orderBy('traded_at', 'desc')
+            ->limit(50)
+            ->get();
+
+        return Inertia::render('Position/Show', [
+            'position' => $position,
+            'wallet' => $wallet,
+            'transactions' => $transactions,
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Recalculate a specific position.
      */
-    public function store(StorePositionRequest $request)
+    public function recalculate(Wallet $wallet, Position $position): RedirectResponse
     {
-        //
+        $this->authorize('recalculate', $position);
+
+        $this->recalculatePosition->execute(
+            $wallet,
+            $position->asset_id,
+            $position->custom_asset_id
+        );
+
+        return redirect()->route('wallets.positions.show', [$wallet, $position])
+            ->with('success', 'Position recalculada com sucesso.');
     }
 
     /**
-     * Display the specified resource.
+     * Recalculate all positions for the wallet.
      */
-    public function show(Position $position)
+    public function recalculateAll(Wallet $wallet): RedirectResponse
     {
-        //
-    }
+        $this->authorize('viewAny', [Position::class, $wallet]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Position $position)
-    {
-        //
-    }
+        $results = $this->recalculateAllPositions->execute($wallet);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatePositionRequest $request, Position $position)
-    {
-        //
-    }
+        $message = "Positions recalculadas: {$results['recalculated']}";
+        if ($results['deleted'] > 0) {
+            $message .= ", {$results['deleted']} deletadas";
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Position $position)
-    {
-        //
+        return redirect()->route('wallets.positions.index', $wallet)
+            ->with('success', $message);
     }
 }
